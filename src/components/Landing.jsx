@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Landing.css"; // Import your CSS file for styling
+import "./Landing.css";
 
 const Landing = () => {
   return (
@@ -10,8 +10,7 @@ const Landing = () => {
       <div className="action-buttons">
         <Link to="/register" className="register-button">
           Register
-        </Link>{" "}
-        |
+        </Link>
         <Link to="/login" className="login-button">
           Login
         </Link>

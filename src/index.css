@@ -1,13 +1,47 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+:root {
+  --navbar-color: hsla(256, 37%, 24%, 1);
+  --text-color: hsla(325, 100%, 91%, 1);
+  --background-color: hsla(40, 76%, 88%, 1);
+  --background-color-warm: hsla(60, 20%, 90%, 1);
+  --default-button-color: linear-gradient(160deg, #ffd3e8 0%, #3d315b 100%);
+  --button-hover-color: linear-gradient(160deg, #fdcb9e 0%, #4a3f6b 100%);
+  --positive-action: hsla(142, 98%, 35%, 1);
+  --cancel-delete-action: hsla(342, 76%, 26%, 1);
+  --error-message-display: hsla(0, 100%, 50%, 1);
+  --font-family: "Palatino", "Times New Roman", serif;
+  --border-deco: solid 2px hsla(285, 40%, 89%, 1);
+  --border-grey: hsla(0, 0%, 65%, 1);
+  --update-button-background: hsla(207, 100%, 40%, 1);
+  --update-button-text: white;
+  --welcome-text-color: hsla(200, 15%, 30%, 1);
+  --underline-color: hsla(28, 100%, 57%, 1);
+  --underline-color-welcomemsg: hsla(0, 100%, 72%, 1);
+  --input-border-color: hsla(210, 50%, 85%, 1);
+  --input-focus-color: hsla(210, 100%, 55%, 1);
+  --text-black-color: hsla(0, 0%, 20%, 1);
+  --primary-bg-color: hsla(40, 80%, 95%, 1);
+  --accent-color: hsla(28, 30%, 25%, 1);
+  --secondary-color: hsla(28, 20%, 70%, 1);
+  --highlight-color: hsla(28, 60%, 60%, 1);
+  --box-shadow-dark: hsla(0, 0%, 0%, 0.1);
+  --font-family-serif: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  --font-family-sans: "Arial", sans-serif;
+  --google-background-color: hsla(220, 11%, 97%, 1);
+  --google-primary-bg-color: hsla(0, 0%, 100%, 1);
+  --google-secondary-color: hsla(0, 0%, 88%, 1);
+  --google-accent-color: hsla(207, 100%, 50%, 1);
+  --google-highlight-color: hsla(0, 0%, 0%, 0.7);
+  --google-positive-action: hsla(140, 60%, 50%, 1);
+  --google-font-family-serif: "Georgia", "Times New Roman", Times, serif;
+  --google-transition-speed: 0.35s;
 }

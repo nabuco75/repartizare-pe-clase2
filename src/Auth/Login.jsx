@@ -1,33 +1,67 @@
-// src/Auth/LoginPage.js
 import React, { useState } from "react";
-import { auth } from "../firebase-config";
+import { auth } from "../firebase-config"; // Update the import path
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth"; // Import signInWithEmailAndPassword and other necessary Firebase functions
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [resetMessage, setResetMessage] = useState("");
 
-  const login = async (e) => {
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      // Redirect or update UI after successful login
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      setFormData({
+        email: "",
+        password: "",
+      });
+      setLoading(false);
+      navigate("/");
     } catch (error) {
-      setError(error.message);
+      setError("Invalid email or password. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      await sendPasswordResetEmail(auth, formData.email);
+      setResetMessage("Password reset email sent. Please check your inbox.");
+    } catch (error) {
+      setError("Error sending reset email. Please, enter valid email!");
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={login}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="login__container">
+      <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required className="login__input" />
+      <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required className="login__input" />
+      {error && <p className="error-message">{error}</p>}
+      {resetMessage && <p className="success-message">{resetMessage}</p>}
+      <button type="submit" className="login__button" disabled={loading}>
+        {loading ? "Logging In..." : "Login"}
+      </button>
+      <button type="button" className="forgot-button" onClick={handleForgotPassword}>
+        Reset password
+      </button>
+    </form>
   );
-}
+};
 
-export default LoginPage;
+export default Login;

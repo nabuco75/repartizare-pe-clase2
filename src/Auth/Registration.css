@@ -1,0 +1,109 @@
+.registration-container {
+  max-width: 450px;
+  margin: 40px auto;
+  padding: 40px;
+  background: var(--background-color-warm);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px var(--box-shadow-dark);
+  backdrop-filter: blur(10px);
+}
+
+.registration-title {
+  font-size: 2.5em;
+  font-weight: 600;
+  text-align: center;
+  color: var(--navbar-color);
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.registration-title::after {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 60px;
+  background: linear-gradient(45deg, hsla(193, 69%, 73%, 1), hsla(207, 90%, 54%, 1));
+  margin: 10px auto 0;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.registration-input {
+  border: 2px solid var(--navbar-color);
+  padding: 15px 20px;
+  border-radius: 30px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.registration-input:focus {
+  border-color: hsla(220, 77%, 67%, 1);
+  box-shadow: 0 0 0 3px hsla(220, 77%, 67%, 0.3);
+}
+
+.registerButton,
+.reset-button {
+  padding: 15px 20px;
+  border: 0;
+  border-radius: 30px;
+  color: var(--update-button-text);
+  font-size: 1rem;
+  background-image: linear-gradient(45deg, hsla(193, 69%, 73%, 1), hsla(207, 90%, 54%, 1));
+  box-shadow: 0 2px 15px hsla(207, 89%, 54%, 0.4);
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.registerButton:hover,
+.reset-button:hover {
+  box-shadow: 0 5px 25px hsla(207, 89%, 54%, 0.5);
+  transform: translateY(-3px); /* Slight lift */
+}
+
+.registerButton:focus,
+.reset-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px hsla(207, 89%, 54%, 0.5);
+}
+
+.error-message,
+.success-message {
+  border-radius: 20px;
+  padding: 10px;
+  margin-top: -10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.error-message {
+  background-color: hsla(12, 59%, 92%, 1);
+  color: var(--error-message-display);
+}
+
+.success-message {
+  color: var(--positive-action);
+}
+
+@media (max-width: 768px) {
+  .registration-container {
+    padding: 30px;
+  }
+
+  .registration-title {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-container {
+    padding: 20px;
+  }
+
+  .registration-title {
+    font-size: 1.5em;
+  }
+}
