@@ -1,22 +1,27 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "./Landing.css";
+import React, { useState } from "react";
+import RepartizareElevi from "./RepartizareElevi";
+import GeneratePDFButton from "./GeneratePDFButton";
+import FileUploader from "./FileUploader";
 
-const Landing = () => {
+function Landing() {
+  const [file, setFile] = useState(null);
+
+  const handleFileUpload = (uploadedFile) => {
+    setFile(uploadedFile);
+  };
+
   return (
-    <div className="landing-container">
-      <h1>Welcome to Our App</h1>
-      <p>This is the home page of your application.</p>
-      <div className="action-buttons">
-        <Link to="/register" className="register-button">
-          Register
-        </Link>
-        <Link to="/login" className="login-button">
-          Login
-        </Link>
-      </div>
+    <div>
+      <h2>Repartizarea elevilor pe clase</h2>
+      <FileUploader onFileUpload={handleFileUpload} />
+
+      {/* Adăugăm componenta pentru repartizarea elevilor */}
+      <RepartizareElevi file={file} />
+
+      {/* Adăugăm componenta pentru generarea PDF-ului */}
+      <GeneratePDFButton />
     </div>
   );
-};
+}
 
 export default Landing;

@@ -1,38 +1,35 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--navbar-color) 0%, #ff6b6b 100%); /* Gradient între verde și roșu */
   color: white;
+  padding: 30px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 10px 10px; /* Rotunjirea colțurilor inferioare */
+  position: relative;
+  z-index: 1;
 }
 
-.App-link {
-  color: #61dafb;
+/* Efect de umbrire și tranziție */
+.header::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 80%;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+/* Adaptarea la ecrane mici */
+@media (max-width: 768px) {
+  .header {
+    font-size: 24px;
+    padding: 20px;
   }
 }

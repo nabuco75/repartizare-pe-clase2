@@ -1,0 +1,30 @@
+/* FileUploader.css (poți crea un fișier separat pentru stilizare) */
+
+/* Stilizăm containerul pentru încărcarea fișierului */
+div.FileUploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+/* Stilizăm inputul pentru fișier ascuns */
+input[type="file"] {
+  display: none;
+}
+
+/* Stilizăm butonul de încărcare */
+label.FileUploader-label {
+  cursor: pointer;
+  background-color: #007bff; /* Culoarea de fundal */
+  color: #fff; /* Culoarea textului */
+  padding: 10px 20px; /* Mărimea și spațiul butonului */
+  border: none; /* Eliminăm bordura */
+  border-radius: 5px; /* Adăugăm colțuri rotunjite */
+  transition: background-color 0.3s ease; /* Efect de tranziție la hover */
+}
+
+/* Stilizăm butonul la hover */
+label.FileUploader-label:hover {
+  background-color: #0056b3; /* Schimbăm culoarea de fundal la hover */
+}

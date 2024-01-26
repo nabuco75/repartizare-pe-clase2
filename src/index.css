@@ -10,6 +10,7 @@ code {
 }
 :root {
   --navbar-color: hsla(256, 37%, 24%, 1);
+  --header-color: hsla(197, 85%, 44%, 1);
   --text-color: hsla(325, 100%, 91%, 1);
   --background-color: hsla(40, 76%, 88%, 1);
   --background-color-warm: hsla(60, 20%, 90%, 1);
