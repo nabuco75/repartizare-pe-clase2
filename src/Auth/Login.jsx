@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { auth } from "../firebase-config"; // Update the import path
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth"; // Import signInWithEmailAndPassword and other necessary Firebase functions
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
 import "./Login.css";
+
 const Login = () => {
+  const { dispatch } = useAuth(); // Utilizarea useAuth pentru a accesa Context API
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +27,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      // Dispatchează o acțiune pentru a efectua autentificarea
+      dispatch({ type: "LOGIN" });
+
       setFormData({
         email: "",
         password: "",
@@ -41,7 +44,9 @@ const Login = () => {
 
   const handleForgotPassword = async () => {
     try {
-      await sendPasswordResetEmail(auth, formData.email);
+      // Dispatchează o acțiune pentru a efectua resetarea parolei
+      dispatch({ type: "RESET_PASSWORD" });
+
       setResetMessage("Password reset email sent. Please check your inbox.");
     } catch (error) {
       setError("Error sending reset email. Please, enter valid email!");

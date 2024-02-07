@@ -1,0 +1,77 @@
+/* General styles */
+body {
+  font-family: "Arial", sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+/* RepartizareElevi component styles */
+.repartizare-elevi-container {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.repartizare-elevi-container h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.repartizare-elevi-container select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  box-sizing: border-box; /* Add this to include padding in the width */
+}
+
+.repartizare-elevi-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.repartizare-elevi-container button:hover {
+  background-color: #4cae4c;
+}
+
+/* Styles for the class distribution results */
+.clase-repartizate {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.clasa {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.clasa:last-child {
+  border-bottom: none;
+}
+
+.clasa h3 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+/* FileUploader styling */
+.file-uploader {
+  margin-bottom: 20px;
+}
+
+/* Add any additional styles for other elements here */

@@ -1,17 +1,13 @@
 import React, { useState } from "react";
-import GeneratePDFButton from "./GeneratePDFButton";
-import * as XLSX from "xlsx"; // Importă XLSX
-import FileUploader from "./FileUploader";
+import * as XLSX from "xlsx";
+import { useAuth } from "./AuthContext";
+import "./RepartizareElevi.css";
 
 function RepartizareElevi() {
-  const [file, setFile] = useState(null);
   const [numarClase, setNumarClase] = useState("");
   const [numarEleviPeClasa, setNumarEleviPeClasa] = useState("");
-  const [clase, setClase] = useState([]);
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  const [clase, setClase] = useState([]); // Starea pentru a stoca clasele repartizate
+  const { state: authState } = useAuth();
 
   const handleNumarClaseChange = (e) => {
     setNumarClase(e.target.value);
@@ -22,7 +18,7 @@ function RepartizareElevi() {
   };
 
   const handleRepartizare = () => {
-    if (file && numarClase && numarEleviPeClasa) {
+    if (numarClase && numarEleviPeClasa && authState.isAuthenticated) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const data = e.target.result;
@@ -35,14 +31,14 @@ function RepartizareElevi() {
         const eleviSortati = jsonData.sort((a, b) => a.nume.localeCompare(b.nume, "ro"));
 
         // Distribuim elevii în clase
-        const clase = Array.from({ length: numarClase }, () => []);
+        const claseRepartizate = Array.from({ length: numarClase }, () => []);
         let indexClasa = 0;
 
         // Repartizăm întâi fetele
         eleviSortati
           .filter((e) => e.gen === "F")
           .forEach((elev) => {
-            clase[indexClasa % numarClase].push(elev);
+            claseRepartizate[indexClasa % numarClase].push(elev);
             indexClasa++;
           });
 
@@ -50,23 +46,23 @@ function RepartizareElevi() {
         eleviSortati
           .filter((e) => e.gen === "M")
           .forEach((elev) => {
-            clase[indexClasa % numarClase].push(elev);
+            claseRepartizate[indexClasa % numarClase].push(elev);
             indexClasa++;
           });
 
         // Actualizăm starea cu clasele repartizate
-        setClase(clase);
+        setClase(claseRepartizate);
       };
-      reader.readAsBinaryString(file);
+    } else if (!authState.isAuthenticated) {
+      alert("Trebuie să fiți autentificat pentru a efectua repartizarea.");
     } else {
       alert("Selectează un fișier, numărul de clase și numărul de elevi pe clasă!");
     }
   };
 
   return (
-    <div>
+    <div className="repartizare-elevi-container">
       <h2>Repartizarea elevilor pe clase</h2>
-      <FileUploader onFileUpload={handleFileChange} /> {/* Aici adăugăm FileUploader cu handlerul corect */}
       <select value={numarClase} onChange={handleNumarClaseChange}>
         <option value="">Selectează numărul de clase</option>
         {Array.from({ length: 12 }, (_, i) => i + 1).map((numar) => (
@@ -83,9 +79,21 @@ function RepartizareElevi() {
           </option>
         ))}
       </select>
-      <button onClick={handleRepartizare}>Repartizează</button>
-      {/* Adăugăm componenta pentru generarea PDF-ului */}
-      {clase.length > 0 && <GeneratePDFButton clase={clase} />}
+      {authState.isAuthenticated && (
+        <div>
+          <button onClick={handleRepartizare}>Repartizează</button>
+          {clase.length > 0 && (
+            <div>
+              <h3>Repartizare pe clase:</h3>
+              {clase.map((clasa, index) => (
+                <div key={index}>
+                  Clasa {index + 1}: {clasa.length} elevi
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

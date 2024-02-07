@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import RepartizareElevi from "./RepartizareElevi";
-import GeneratePDFButton from "./GeneratePDFButton";
 import FileUploader from "./FileUploader";
+import GenerateExcel from "./GenerateExcel";
+import { useAuth } from "./AuthContext"; // Importul useAuth din Context API
 
 function Landing() {
   const [file, setFile] = useState(null);
+  const { state } = useAuth(); // Utilizarea useAuth pentru a accesa starea autentificării
 
   const handleFileUpload = (uploadedFile) => {
     setFile(uploadedFile);
@@ -12,14 +14,13 @@ function Landing() {
 
   return (
     <div>
-      <h2>Repartizarea elevilor pe clase</h2>
       <FileUploader onFileUpload={handleFileUpload} />
 
       {/* Adăugăm componenta pentru repartizarea elevilor */}
       <RepartizareElevi file={file} />
 
-      {/* Adăugăm componenta pentru generarea PDF-ului */}
-      <GeneratePDFButton />
+      {/* Adăugăm componenta pentru generarea Excel-ului, doar pentru utilizatorii autentificați */}
+      {state.isAuthenticated && <GenerateExcel />}
     </div>
   );
 }
