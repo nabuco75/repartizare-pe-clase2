@@ -1,0 +1,19 @@
+.generate-excel-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.generate-excel-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.generate-excel-button:hover {
+  background-color: #0056b3;
+}

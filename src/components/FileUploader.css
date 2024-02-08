@@ -1,6 +1,3 @@
-/* FileUploader.css (poți crea un fișier separat pentru stilizare) */
-
-/* Stilizăm containerul pentru încărcarea fișierului */
 div.FileUploader {
   display: flex;
   flex-direction: column;
@@ -8,7 +5,6 @@ div.FileUploader {
   margin: 20px;
 }
 
-/* Stilizăm inputul pentru fișier ascuns */
 input[type="file"] {
   display: none;
 }

@@ -1,7 +1,8 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import PropTypes from "prop-types";
-import { useAuth } from "./AuthContext"; // Importul useAuth din Context API
+import { useAuth } from "./AuthContext";
+import "./GenerateExcel.css";
 
 function GenerateExcel({ data }) {
   const { state: authState } = useAuth(); // Obțineți starea de autentificare
@@ -22,8 +23,10 @@ function GenerateExcel({ data }) {
   };
 
   return (
-    <div>
-      <button onClick={generateExcelFiles}>Generare Excel pentru fiecare clasă</button>
+    <div className="generate-excel-container">
+      <button className="generate-excel-button" onClick={generateExcelFiles}>
+        Generare Excel pentru fiecare clasă
+      </button>
     </div>
   );
 }
