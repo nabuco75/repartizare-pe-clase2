@@ -1,33 +1,35 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import PropTypes from "prop-types";
-import { useAuth } from "./AuthContext"; // Importați hook-ul de autentificare
+import { useAuth } from "./AuthContext"; // Importul useAuth din Context API
 
-function GenerateExcel({ clase }) {
+function GenerateExcel({ data }) {
   const { state: authState } = useAuth(); // Obțineți starea de autentificare
 
-  const generateExcelFile = () => {
-    // Verificați dacă utilizatorul este autentificat înainte de a permite descărcarea
-    if (authState.isAuthenticated) {
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(clase);
-      XLSX.utils.sheet_add_json(worksheet, clase, { header: ["Nume", "Prenume", "Gen"], skipHeader: true });
-      XLSX.utils.book_append_sheet(workbook, worksheet, "RepartizareElevi");
-      XLSX.writeFile(workbook, "RepartizareElevi.xlsx");
+  const generateExcelFiles = () => {
+    // Verificați dacă utilizatorul este autentificat și datele sunt disponibile
+    if (authState.isAuthenticated && data && data.length > 0) {
+      // Iterăm prin fiecare clasă
+      data.forEach((clasaData, index) => {
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(clasaData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, `Clasa_${index + 1}`);
+        XLSX.writeFile(workbook, `Clasa_${index + 1}.xlsx`);
+      });
     } else {
-      alert("Trebuie să vă autentificați pentru a descărca Excel.");
+      alert("Trebuie să vă autentificați și să furnizați date pentru a descărca Excel.");
     }
   };
 
   return (
     <div>
-      <button onClick={generateExcelFile}>Generare Excel</button>
+      <button onClick={generateExcelFiles}>Generare Excel pentru fiecare clasă</button>
     </div>
   );
 }
 
 GenerateExcel.propTypes = {
-  clase: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 export default GenerateExcel;
