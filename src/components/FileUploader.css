@@ -1,30 +1,67 @@
-div.FileUploader {
+.FileUploader {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px;
+  margin: 20px auto;
+  max-width: 500px;
+  background: #f8f9fa;
+  padding: 40px 100px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 input[type="file"] {
   display: none;
 }
 
-/* Stilizăm butonul de încărcare */
 label.FileUploader-label {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  background-color: #007bff; /* Culoarea de fundal */
-  color: #fff; /* Culoarea textului */
-  padding: 10px 20px; /* Mărimea și spațiul butonului */
-  border: none; /* Eliminăm bordura */
-  border-radius: 5px; /* Adăugăm colțuri rotunjite */
-  transition: background-color 0.3s ease; /* Efect de tranziție la hover */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-block;
+  margin-bottom: 15px; /* Spațiu sub butonul de încărcare */
 }
 
-/* Stilizăm butonul la hover */
-label.FileUploader-label:hover {
-  background-color: #0056b3; /* Schimbăm culoarea de fundal la hover */
+.download-template-link {
+  background-color: #28a745;
+  color: #ffffff;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-block;
+  margin-top: 20px; /* Spațiu adăugat deasupra link-ului de descărcare */
 }
+
 .paragraph-file-uploder {
-  color: red;
+  color: #dc3545;
   font-weight: 500;
+  margin-top: 20px;
+}
+
+/* Îmbunătățiri pentru accesibilitate */
+.FileUploader:focus-within .FileUploader-label,
+.download-template-link:focus {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #007bff;
+  outline: none;
+}
+
+/* Mesaj pentru utilizatorii nelogati */
+.paragraph-file-uploder {
+  background-color: #ffdddd;
+  border-left: 4px solid #dc3545;
+  padding: 10px;
+  border-radius: 4px;
+  color: var(--navbar-color);
+  width: 100%;
+  text-align: center;
+  line-height: 1.5;
+  font-weight: 700; /* Ajustează acest număr conform necesităților tale */
 }

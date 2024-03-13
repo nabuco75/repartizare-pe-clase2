@@ -1,42 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { getAuth, onAuthStateChanged } from "firebase/auth"; // Importăm metoda onAuthStateChanged pentru a asculta schimbările de stare ale autentificării
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"; // Unifică importurile pentru Firebase Auth
 import "./Navbar.css";
 
 const Navbar = () => {
-  const { state } = useAuth();
+  const { state, dispatch } = useAuth(); // Dacă folosești dispatch pentru a actualiza starea contextului
   const { isAuthenticated } = state || {};
-  const [userDetails, setUserDetails] = useState(null); // Starea pentru a stoca detaliile utilizatorului
+  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
 
-    // Ascultăm schimbările de stare ale autentificării pentru a obține detalii despre utilizator
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Dacă utilizatorul este autentificat, obținem detaliile și le actualizăm în starea locală
         setUserDetails({
-          name: user.displayName,
-          // puteți adăuga și alte detalii aici, dacă sunt disponibile în profilul utilizatorului
+          name: user.displayName || "Utilizator", // Asigură-te că ai o valoare fallback
         });
       } else {
-        // Dacă utilizatorul nu este autentificat, ștergem detaliile din starea locală
         setUserDetails(null);
       }
     });
 
-    // Curățăm eventualele abonări la schimbările de stare ale autentificării
     return () => unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(getAuth());
+      dispatch({ type: "LOGOUT" }); // Actualizează contextul de autentificare, dacă este cazul
+    } catch (error) {
+      console.error("Eroare la delogare: ", error);
+    }
+  };
 
   return (
     <nav>
       <Link to="/">Home</Link>
       {isAuthenticated ? (
-        <div className="user-info">
-          <p>Hello, {userDetails?.name}</p> {/* Afisăm numele utilizatorului */}
-        </div>
+        <>
+          <div className="user-info">
+            <p>Hello, {userDetails?.name}</p>
+          </div>
+          <button onClick={handleLogout} className="logout-button">
+            Logout
+          </button>
+        </>
       ) : (
         <div>
           <Link to="/register">Register</Link>

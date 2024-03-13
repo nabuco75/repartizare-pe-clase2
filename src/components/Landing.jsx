@@ -3,6 +3,7 @@ import RepartizareElevi from "./RepartizareElevi";
 import FileUploader from "./FileUploader";
 import GenerateExcel from "./GenerateExcel";
 import { useAuth } from "./AuthContext";
+import "./Landing.css";
 
 function Landing() {
   const [uploadedData, setUploadedData] = useState(null);
@@ -29,7 +30,7 @@ function Landing() {
   }, [uploadedData]);
 
   return (
-    <div>
+    <div className="landing-page-container">
       <FileUploader onFileUpload={handleFileUpload} />
 
       {dataLoaded && ( // Verificăm dacă datele sunt încărcate înainte de a afișa componenta RepartizareElevi

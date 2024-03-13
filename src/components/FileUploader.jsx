@@ -38,12 +38,22 @@ function FileUploader({ onFileUpload }) {
   return (
     <div className="FileUploader">
       {state.isAuthenticated ? (
-        <label className="FileUploader-label">
-          Încarcă fișierul
-          <input type="file" accept=".xlsx" onChange={handleFileChange} />
-        </label>
+        <>
+          <label className="FileUploader-label">
+            Încarcă fișierul
+            <input type="file" accept=".xlsx" onChange={handleFileChange} />
+          </label>
+          <div className="download-template-container">
+            <a href={`${process.env.PUBLIC_URL}DownloadTemplate.xlsx`} download="DownloadTemplate.xlsx" className="download-template-link">
+              Descarcă Macheta
+            </a>
+          </div>
+        </>
       ) : (
-        <p className="paragraph-file-uploder">Logați-vă pentru a încărca fișiere.</p>
+        <p className="paragraph-file-uploder">
+          Vă invităm să vă autentificați pentru a accesa macheta necesară repartizării elevilor. Nu aveți cont? Creați unul acum pentru a vă alătura comunității noastre și a accesa resursele necesare
+          repartizării elevilor în formațiunile de studiu aprobate.
+        </p>
       )}
     </div>
   );

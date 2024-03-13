@@ -55,6 +55,31 @@ nav a:hover {
 .user-info p {
   margin: 0 10px; /* Spațiere între elementele mesajului */
 }
+/* Continuăm stilurile existente pentru bara de navigare */
+
+.logout-button {
+  background-color: transparent; /* Fundal transparent pentru integrare fluidă */
+  color: white; /* Text alb pentru a se potrivi cu schema de culori */
+  border: 2px solid white; /* Bordură subțire pentru a evidenția butonul */
+  padding: 0.5em 1em; /* Padding corespunzător pentru confort la click */
+  border-radius: 5px; /* Colțuri rotunjite pentru a se potrivi cu designul link-urilor */
+  font-weight: bold; /* Text îngroșat pentru a se potrivi cu greutatea fontului link-urilor */
+  cursor: pointer; /* Cursor tip pointer pentru a indica acțiunea clicabilă */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease; /* Tranziție pentru hover */
+  margin-left: 10px; /* O mică spațiere față de mesajul de salut sau alte elemente */
+}
+
+.logout-button:hover {
+  background-color: #ff6b6b; /* Culoare de accent roșie la hover */
+  color: black; /* Schimbarea culorii textului la hover pentru contrast */
+  border-color: #ff6b6b; /* Asortarea bordurii cu fundalul la hover */
+}
+
+/* Îmbunătățirea accesibilității la focus pentru utilizatorii de tastatură */
+.logout-button:focus {
+  outline: none; /* Eliminăm conturul implicit */
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff6b6b; /* Adăugăm o umbră de focus pentru vizibilitate */
+}
 
 /* Stil pentru bara de navigare la ecrane mai mici (max-width: 768px) */
 @media (max-width: 768px) {

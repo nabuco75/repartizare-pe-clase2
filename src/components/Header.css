@@ -18,7 +18,7 @@
 
 .header-text h1 {
   margin: 0 0 10px 0; /* Elimină marginile implicite și adaugă spațiu sub titlu */
-  font-size: 2.5rem; /* Ajustează dimensiunea fontului pentru titlu */
+  font-size: 3.5rem; /* Ajustează dimensiunea fontului pentru titlu */
   font-weight: bold; /* Face fontul titlului mai gros */
 }
 
