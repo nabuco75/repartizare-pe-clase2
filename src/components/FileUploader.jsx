@@ -43,7 +43,7 @@ function FileUploader({ onFileUpload }) {
           <input type="file" accept=".xlsx" onChange={handleFileChange} />
         </label>
       ) : (
-        <p>Logați-vă pentru a încărca fișiere.</p>
+        <p className="paragraph-file-uploder">Logați-vă pentru a încărca fișiere.</p>
       )}
     </div>
   );

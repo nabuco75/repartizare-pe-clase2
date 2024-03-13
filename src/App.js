@@ -6,16 +6,20 @@ import Login from "./Auth/Login";
 import Navbar from "./components/Navbar";
 import Landing from "./components/Landing";
 import { AuthProvider } from "./components/AuthContext";
+import Header from "./components/Header"; // Importă componenta Header
+
+// Importă imaginea pe care dorești să o afișezi
+import backgroundImage from "./assets/Repartizare1.webp";
 
 function App() {
   return (
     <AuthProvider>
-      {" "}
       <Router>
         <div className="navbar">
           <Navbar />
         </div>
-        <div className="header"> Clasa Pregătitoare: Repartizarea elevilor pe clase - Aplicație Web - proiect digital al Școlii Gimnaziale Ștefan cel Mare Vaslui</div>
+        {/* Utilizează componenta Header și transmite-i prop-ul backgroundImage */}
+        <Header backgroundImage={backgroundImage} />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Landing />} />

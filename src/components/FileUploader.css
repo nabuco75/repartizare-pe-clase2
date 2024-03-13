@@ -24,3 +24,7 @@ label.FileUploader-label {
 label.FileUploader-label:hover {
   background-color: #0056b3; /* Schimbăm culoarea de fundal la hover */
 }
+.paragraph-file-uploder {
+  color: red;
+  font-weight: 500;
+}

@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* Ajustează înălțimea după necesități */
+  width: 100%;
+  background-size: cover; /* Asigură-te că imaginea de fundal acoperă întreaga zonă */
+  background-position: center; /* Centrează imaginea de fundal */
+  color: white; /* Schimbă culoarea textului în funcție de imaginea de fundal */
+  text-align: center;
+}
+
+.header-text {
+  background-color: rgba(0, 0, 0, 0.5); /* Adaugă un fundal semi-transparent pentru text pentru a îmbunătăți lizibilitatea */
+  padding: 20px;
+  border-radius: 8px; /* Rotunjește colțurile fundalului textului */
+}
+
+.header-text h1 {
+  margin: 0 0 10px 0; /* Elimină marginile implicite și adaugă spațiu sub titlu */
+  font-size: 2.5rem; /* Ajustează dimensiunea fontului pentru titlu */
+  font-weight: bold; /* Face fontul titlului mai gros */
+}
+
+.header-text p {
+  margin: 0; /* Elimină marginile implicite */
+  font-size: 1.2rem; /* Ajustează dimensiunea fontului pentru paragraf */
+  line-height: 1.5; /* Ajustează înălțimea liniei pentru a îmbunătăți lizibilitatea */
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: 200px; /* Reduc înălțimea pe dispozitivele mobile */
+  }
+
+  .header-text h1 {
+    font-size: 1.8rem; /* Micșorează fontul titlului pentru ecrane mici */
+  }
+
+  .header-text p {
+    font-size: 1rem; /* Micșorează fontul paragrafului pentru ecrane mici */
+  }
+}
