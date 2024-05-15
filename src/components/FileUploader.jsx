@@ -47,11 +47,11 @@ function FileUploader({ onFileUpload }) {
       {state.isAuthenticated ? (
         <>
           <label className="FileUploader-label">
-            Încarcă fișierul pentru elevii care împlinesc 6 ani înainte de 1 septembrie
+            Încarcă fișierul pentru elevii care împlinesc 6 ani înainte de 31 august
             <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "before")} />
           </label>
           <label className="FileUploader-label">
-            Încarcă fișierul pentru elevii care împlinesc 6 ani după 1 septembrie
+            Încarcă fișierul pentru elevii care împlinesc 6 ani după 31 august
             <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "after")} />
           </label>
           {isLoading && <p>Se încarcă...</p>}
