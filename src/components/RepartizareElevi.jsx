@@ -141,6 +141,16 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     generateExcelForClasses(claseRepartizate);
   };
 
+  const resetSettings = () => {
+    setNumarClase(0);
+    setNumarEleviPeClasa(20);
+    setClaseRepartizate([]);
+    setClaseRepartizate1([]);
+    setClaseRepartizate2([]);
+    setLista2Inexistenta(false);
+    setEleviNerepartizati(0);
+  };
+
   return (
     <div className="repartizare-elevi-container">
       <h2 className="title">Repartizarea elevilor pe clase</h2>
@@ -165,17 +175,22 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
             ))}
           </select>
         </div>
-      </div>
-      <div className="checkbox-container">
-        <input type="checkbox" id="lista2Inexistenta" checked={lista2Inexistenta} onChange={() => setLista2Inexistenta(!lista2Inexistenta)} />
-        <label htmlFor="lista2Inexistenta" className="checkbox-label">
-          Nu există lista 2 (cu elevi care împlinesc 6 ani după 1 septembrie)
-        </label>
+        <div className="checkbox-container">
+          <input type="checkbox" id="lista2Inexistenta" checked={lista2Inexistenta} onChange={() => setLista2Inexistenta(!lista2Inexistenta)} />
+          <label htmlFor="lista2Inexistenta" className="checkbox-label">
+            Nu există lista 2 (cu elevi care împlinesc 6 ani după 1 septembrie)
+          </label>
+        </div>
       </div>
       {authState.isAuthenticated && (
-        <button className="button" onClick={repartizeazaElevi}>
-          Repartizează
-        </button>
+        <div className="button-group">
+          <button className="button" onClick={repartizeazaElevi}>
+            Repartizează
+          </button>
+          <button className="button reset-button" onClick={resetSettings}>
+            Reset
+          </button>
+        </div>
       )}
 
       {eleviNerepartizati > 0 && (
