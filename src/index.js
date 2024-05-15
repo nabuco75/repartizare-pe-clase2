@@ -1,13 +1,16 @@
-// index.js or index.tsx
 import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import { createRoot } from "react-dom/client"; // Importați createRoot
 import "./index.css";
+import App from "./App";
+import { AuthProvider } from "./components/AuthContext"; // Importați AuthProvider din calea corectă
 
-// Make sure you have a div with id 'root' in your public/index.html file
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const container = document.getElementById("root");
+const root = createRoot(container); // Creați root-ul
+
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );

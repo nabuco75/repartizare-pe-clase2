@@ -1,42 +1,56 @@
-import React, { createContext, useContext, useReducer } from "react";
-import PropTypes from "prop-types"; // Importă PropTypes
+import React, { createContext, useContext, useReducer, useEffect } from "react";
+import PropTypes from "prop-types";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import app from "../firebase-config";
 
-// Crearea contextului pentru autentificare
 const AuthContext = createContext();
 
-// Starea inițială a autentificării
-const initialAuthState = {
+const initialState = {
   isAuthenticated: false,
+  user: null,
 };
 
-// Reducer pentru gestionarea stării autentificării
 const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
-      return { ...state, isAuthenticated: true };
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload,
+      };
     case "LOGOUT":
-      return { ...state, isAuthenticated: false };
-    case "RESET_PASSWORD":
-      // Adaugă logică pentru resetarea parolei aici
-      return state;
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+      };
     default:
       return state;
   }
 };
 
-// Provider-ul contextului pentru autentificare
 export const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const [state, dispatch] = useReducer(authReducer, initialState);
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch({ type: "LOGIN", payload: user });
+      } else {
+        dispatch({ type: "LOGOUT" });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return <AuthContext.Provider value={{ state, dispatch }}>{children}</AuthContext.Provider>;
 };
 
-// Validează tipul prop-ului "children"
+// Adăugăm validarea prop-urilor
 AuthProvider.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
 
-// Hook personalizat pentru a accesa contextul de autentificare
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

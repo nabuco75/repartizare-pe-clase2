@@ -1,100 +1,180 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useAuth } from "./AuthContext";
-import "./RepartizareElevi.css";
 
-function RepartizareElevi({ data, onClaseChange }) {
-  const [numarClase, setNumarClase] = useState("");
-  const [numarEleviPeClasa, setNumarEleviPeClasa] = useState("");
-  const [listaElevi, setListaElevi] = useState([]);
+function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
+  const [numarClase, setNumarClase] = useState(0);
+  const [numarEleviPeClasa, setNumarEleviPeClasa] = useState(22); // Default maximum number of students per class
   const [claseRepartizate, setClaseRepartizate] = useState([]);
+  const [claseRepartizate1, setClaseRepartizate1] = useState([]);
+  const [claseRepartizate2, setClaseRepartizate2] = useState([]);
+  const [lista2Inexistenta, setLista2Inexistenta] = useState(false);
   const { state: authState } = useAuth();
 
   useEffect(() => {
-    if (data && data.length > 0) {
-      setListaElevi(data);
-    }
-  }, [data]);
+    console.log("Data before September:", dataBeforeSept);
+    console.log("Data after September:", dataAfterSept);
+  }, [dataBeforeSept, dataAfterSept]);
 
-  const handleRepartizare = () => {
-    if (!numarClase || !numarEleviPeClasa || !data || data.length === 0) {
-      alert("Toate câmpurile trebuie completate și trebuie încărcată o listă de elevi.");
-      return;
+  const sortAndDistribute = (students, numClasses) => {
+    if (!Array.isArray(students) || students.some((student) => !student.nume)) {
+      console.error("Invalid student data:", students);
+      return [];
     }
+
+    const sorted = students.sort((a, b) => a.nume.localeCompare(b.nume));
+    return distributeStudents(sorted, numClasses);
+  };
+
+  const distributeStudents = (students, numClasses) => {
+    const classes = Array.from({ length: numClasses }, () => []);
+    let currentClassIndex = 0;
+
+    const distributeByGender = (students, gender) => {
+      students
+        .filter((student) => student.gen === gender)
+        .forEach((student) => {
+          classes[currentClassIndex].push(student);
+          currentClassIndex = (currentClassIndex + 1) % numClasses;
+        });
+    };
+
+    distributeByGender(students, "F");
+    distributeByGender(students, "M");
+
+    return classes;
+  };
+
+  const integrateAdditionalStudents = (existingClasses, newStudents) => {
+    const numClasses = existingClasses.length;
+    let currentClassIndex = 0;
+
+    const distributeByGender = (students, gender) => {
+      students
+        .filter((student) => student.gen === gender)
+        .forEach((student) => {
+          while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
+            currentClassIndex = (currentClassIndex + 1) % numClasses;
+          }
+          existingClasses[currentClassIndex].push(student);
+          currentClassIndex = (currentClassIndex + 1) % numClasses;
+        });
+    };
+
+    distributeByGender(newStudents, "F");
+    distributeByGender(newStudents, "M");
+  };
+
+  const repartizeazaElevi = () => {
     if (!authState.isAuthenticated) {
       alert("Trebuie să fiți autentificat pentru a efectua repartizarea.");
       return;
     }
 
-    // Verificăm dacă fiecare obiect din lista de elevi are o proprietate 'nume' definită
-    if (listaElevi.some((elev) => !elev.nume)) {
-      alert("Lista de elevi este invalidă. Asigurați-vă că fiecare elev are o proprietate 'nume' definită.");
+    if (!lista2Inexistenta && dataAfterSept.length === 0) {
+      alert("Lista 2 este goală. Verificați bifarea sau încărcarea listei.");
       return;
     }
 
-    const eleviSortati = [...listaElevi].sort((a, b) => {
-      // Verificăm dacă fiecare elev are o proprietate 'nume' definită
-      if (!a.nume || !b.nume) {
-        return 0; // În cazul în care unul dintre elevi nu are 'nume', le considerăm egali
-      }
-      return a.nume.localeCompare(b.nume, "ro");
-    });
+    const totalStudents1 = dataBeforeSept.length;
+    const totalStudents2 = lista2Inexistenta ? 0 : dataAfterSept.length;
+    const totalStudents = totalStudents1 + totalStudents2;
 
-    const fete = eleviSortati.filter((elev) => elev.gen === "F");
-    const baieti = eleviSortati.filter((elev) => elev.gen === "M");
+    if (totalStudents === 0) {
+      alert("Nu există elevi pentru repartizare.");
+      return;
+    }
 
-    let clase = Array.from({ length: parseInt(numarClase) }, () => []);
+    if (numarClase <= 0) {
+      alert("Introduceți un număr valid de clase.");
+      return;
+    }
 
-    fete.forEach((fata, index) => {
-      const clasaIndex = index % parseInt(numarClase);
-      if (clase[clasaIndex].length < parseInt(numarEleviPeClasa)) {
-        clase[clasaIndex].push(fata);
-      }
-    });
+    console.log("Repartizează elevi...");
 
-    baieti.forEach((baiat, index) => {
-      const clasaIndex = index % parseInt(numarClase);
-      if (clase[clasaIndex].length < parseInt(numarEleviPeClasa)) {
-        clase[clasaIndex].push(baiat);
-      }
-    });
+    const classes1 = sortAndDistribute(dataBeforeSept, numarClase);
+    setClaseRepartizate1(classes1);
 
-    setClaseRepartizate(clase);
-    onClaseChange(clase);
+    let classes2 = [];
+    if (!lista2Inexistenta) {
+      classes2 = sortAndDistribute(dataAfterSept, numarClase);
+      setClaseRepartizate2(classes2);
+    }
+
+    let finalClasses = classes1.map((clasa) => [...clasa]);
+    if (!lista2Inexistenta) {
+      integrateAdditionalStudents(finalClasses, dataAfterSept);
+    }
+
+    const sortedFinalClasses = finalClasses.map((clasa) => clasa.sort((a, b) => a.nume.localeCompare(b.nume)));
+
+    setClaseRepartizate(sortedFinalClasses);
+    onClaseChange(sortedFinalClasses);
   };
 
   return (
     <div className="repartizare-elevi-container">
       <h2>Repartizarea elevilor pe clase</h2>
-
-      <select value={numarClase} onChange={(e) => setNumarClase(e.target.value)}>
-        <option value="">Selectează numărul de clase</option>
-        {Array.from({ length: 12 }, (_, i) => i + 1).map((numar) => (
-          <option key={numar} value={numar}>
-            {numar} clase
-          </option>
-        ))}
-      </select>
-
-      <select value={numarEleviPeClasa} onChange={(e) => setNumarEleviPeClasa(e.target.value)}>
-        <option value="">Selectează nr. elevi pe clasă</option>
-        {Array.from({ length: 30 }, (_, i) => i + 10).map((numar) => (
-          <option key={numar} value={numar}>
-            {numar} elevi
-          </option>
-        ))}
-      </select>
-
-      {authState.isAuthenticated && <button onClick={handleRepartizare}>Repartizează</button>}
-
+      <input type="number" value={numarClase} onChange={(e) => setNumarClase(parseInt(e.target.value) || 0)} placeholder="Număr de clase" />
+      <input type="number" value={numarEleviPeClasa} onChange={(e) => setNumarEleviPeClasa(parseInt(e.target.value) || 0)} placeholder="Număr maxim de elevi per clasă" />
+      <label>
+        <input type="checkbox" checked={lista2Inexistenta} onChange={() => setLista2Inexistenta(!lista2Inexistenta)} />
+        Nu există lista 2 (cu elevi care împlinesc 6 ani după 1 septembrie)
+      </label>
+      {authState.isAuthenticated && <button onClick={repartizeazaElevi}>Repartizează</button>}
+      {claseRepartizate1.length > 0 && (
+        <div className="clase-repartizate">
+          <h3>Repartizare lista 1:</h3>
+          {claseRepartizate1.map((clasa, index) => (
+            <div key={index} className="clasa">
+              <h4>
+                Clasa {index + 1}: {clasa.length} elevi
+              </h4>
+              <ul>
+                {clasa.map((elev, idx) => (
+                  <li key={idx}>
+                    {elev.nume} ({elev.gen})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+      {claseRepartizate2.length > 0 && (
+        <div className="clase-repartizate">
+          <h3>Repartizare lista 2:</h3>
+          {claseRepartizate2.map((clasa, index) => (
+            <div key={index} className="clasa">
+              <h4>
+                Clasa {index + 1}: {clasa.length} elevi
+              </h4>
+              <ul>
+                {clasa.map((elev, idx) => (
+                  <li key={idx}>
+                    {elev.nume} ({elev.gen})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
       {claseRepartizate.length > 0 && (
         <div className="clase-repartizate">
+          <h3>Clase finale reunite:</h3>
           {claseRepartizate.map((clasa, index) => (
-            <div className="clasa" key={index}>
-              <h3>
+            <div key={index} className="clasa">
+              <h4>
                 Clasa {index + 1}: {clasa.length} elevi
-              </h3>
-              {/* Detalii suplimentare despre elevii repartizați pot fi afișate aici */}
+              </h4>
+              <ul>
+                {clasa.map((elev, idx) => (
+                  <li key={idx}>
+                    {elev.nume} ({elev.gen})
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
@@ -104,9 +184,9 @@ function RepartizareElevi({ data, onClaseChange }) {
 }
 
 RepartizareElevi.propTypes = {
-  file: PropTypes.object,
+  dataBeforeSept: PropTypes.array.isRequired,
+  dataAfterSept: PropTypes.array.isRequired,
   onClaseChange: PropTypes.func.isRequired,
-  data: PropTypes.array.isRequired,
 };
 
 export default RepartizareElevi;

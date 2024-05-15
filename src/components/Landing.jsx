@@ -1,46 +1,53 @@
-import React, { useState, useEffect } from "react";
-import RepartizareElevi from "./RepartizareElevi";
-import FileUploader from "./FileUploader";
-import GenerateExcel from "./GenerateExcel";
+import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
+import RegistrationForm from "../Auth/Registration";
+import Login from "../Auth/Login";
+import ParentComponent from "./ParentComponent";
 import "./Landing.css";
 
-function Landing() {
-  const [uploadedData, setUploadedData] = useState(null);
-  const [clase, setClase] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false); // Noua stare pentru a urmări dacă datele au fost încărcate
-
+const Landing = () => {
   const { state } = useAuth();
+  const [showLogin, setShowLogin] = useState(true);
 
-  const handleFileUpload = (uploadedData) => {
-    setUploadedData(uploadedData);
+  const toggleForm = () => {
+    setShowLogin(!showLogin);
   };
-
-  const handleClaseChange = (claseRepartizate) => {
-    setClase(claseRepartizate);
-  };
-
-  useEffect(() => {
-    // Verificăm dacă datele au fost încărcate
-    if (uploadedData && uploadedData.length > 0) {
-      setDataLoaded(true); // Setăm dataLoaded pe true dacă există date încărcate
-    } else {
-      setDataLoaded(false); // Setăm dataLoaded pe false dacă nu există date încărcate
-    }
-  }, [uploadedData]);
 
   return (
-    <div className="landing-page-container">
-      <FileUploader onFileUpload={handleFileUpload} />
-
-      {dataLoaded && ( // Verificăm dacă datele sunt încărcate înainte de a afișa componenta RepartizareElevi
-        <RepartizareElevi data={uploadedData} onClaseChange={handleClaseChange} />
-      )}
-
-      {/* Adăugăm componenta pentru generarea Excel-ului, doar pentru utilizatorii autentificați și dacă există date încărcate */}
-      {state.isAuthenticated && dataLoaded && <GenerateExcel data={clase} />}
+    <div className="landing-container">
+      <header className="landing-header">
+        <h1>Clasa Pregătitoare</h1>
+        <p>Repartizarea elevilor pe clase - Aplicație Web - proiect digital al Școlii Gimnaziale Ștefan cel Mare Vaslui</p>
+      </header>
+      <main className="landing-main">
+        {!state.isAuthenticated ? (
+          <div className="auth-message">
+            <p>
+              Vă invităm să vă autentificați pentru a accesa macheta necesară repartizării elevilor. Nu aveți cont? Creați unul acum pentru a vă alătura comunității noastre și a accesa resursele
+              necesare repartizării elevilor în formațiunile de studiu aprobate.
+            </p>
+            {showLogin ? (
+              <>
+                <Login onLogin={() => setShowLogin(false)} />
+                <p>
+                  Nu ai cont? <button onClick={toggleForm}>Înregistrează-te</button>
+                </p>
+              </>
+            ) : (
+              <>
+                <RegistrationForm onLogin={() => setShowLogin(true)} />
+                <p>
+                  Ai deja cont? <button onClick={toggleForm}>Loghează-te</button>
+                </p>
+              </>
+            )}
+          </div>
+        ) : (
+          <ParentComponent />
+        )}
+      </main>
     </div>
   );
-}
+};
 
 export default Landing;

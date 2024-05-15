@@ -1,19 +1,27 @@
 .generate-excel-container {
-  margin-top: 20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .generate-excel-button {
   padding: 10px 20px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  justify-content: center;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.generate-excel-button:hover {
+.generate-excel-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.generate-excel-button:hover:not(:disabled),
+.generate-excel-button:focus:not(:disabled) {
   background-color: #0056b3;
 }

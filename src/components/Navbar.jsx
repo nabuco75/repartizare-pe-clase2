@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "./AuthContext";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"; // Unifică importurile pentru Firebase Auth
+import { useAuth } from "./AuthContext"; // Asigură-te că folosești corect useAuth
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const { state, dispatch } = useAuth(); // Dacă folosești dispatch pentru a actualiza starea contextului
+  const { state, dispatch } = useAuth();
   const { isAuthenticated } = state || {};
   const [userDetails, setUserDetails] = useState(null);
 
@@ -15,7 +15,7 @@ const Navbar = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserDetails({
-          name: user.displayName || "Utilizator", // Asigură-te că ai o valoare fallback
+          name: user.displayName || "Utilizator",
         });
       } else {
         setUserDetails(null);
@@ -28,7 +28,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await signOut(getAuth());
-      dispatch({ type: "LOGOUT" }); // Actualizează contextul de autentificare, dacă este cazul
+      dispatch({ type: "LOGOUT" });
     } catch (error) {
       console.error("Eroare la delogare: ", error);
     }
