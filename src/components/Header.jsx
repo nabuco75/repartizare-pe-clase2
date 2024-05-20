@@ -4,7 +4,7 @@ import "./Header.css";
 
 function Header({ backgroundImage }) {
   return (
-    <div className="header" style={{ backgroundImage: `url(${backgroundImage})` }}>
+    <div className="header-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <div className="header-text">
         <h1>Clasa Pregătitoare</h1>
         <p>Repartizarea elevilor pe clase - Aplicație Web - proiect digital al Școlii Gimnaziale Ștefan cel Mare Vaslui</p>

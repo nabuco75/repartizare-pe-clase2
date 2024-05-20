@@ -24,8 +24,8 @@ function FileUploader({ onFileUpload }) {
           const formattedData = jsonData.map((item) => ({
             nume: `${item.NUME} ${item.PRENUME}`,
             gen: item.GENUL,
-            dataNasterii: item.DATA_NASTERII,
-            frati: item.FRATI,
+            frate: item.FRATE,
+            sora: item.SORĂ,
           }));
 
           console.log("Parsed data:", formattedData);
@@ -46,6 +46,15 @@ function FileUploader({ onFileUpload }) {
     <div className="FileUploader">
       {state.isAuthenticated ? (
         <>
+          <div className="download-buttons-container">
+            <a href={`${process.env.PUBLIC_URL}/assets/macheta de incarcare-LISTA1-blank.xlsx`} download="macheta de incarcare-LISTA1-blank.xlsx" className="download-button">
+              Descarcă Lista 1
+            </a>
+            <a href={`${process.env.PUBLIC_URL}/assets/macheta de incarcare-LISTA2-blank.xlsx`} download="macheta de incarcare-LISTA2-blank.xlsx" className="download-button">
+              Descarcă Lista 2
+            </a>
+          </div>
+
           <label className="FileUploader-label">
             Încarcă fișierul pentru elevii care împlinesc 6 ani înainte de 31 august
             <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "before")} />
@@ -55,14 +64,9 @@ function FileUploader({ onFileUpload }) {
             <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "after")} />
           </label>
           {isLoading && <p>Se încarcă...</p>}
-          <div className="download-template-container">
-            <a href={`${process.env.PUBLIC_URL}/DownloadTemplate.xlsx`} download="DownloadTemplate.xlsx" className="download-template-link">
-              Descarcă Macheta
-            </a>
-          </div>
         </>
       ) : (
-        <p>Vă invităm să vă autentificați pentru a accesa funcționalitățile.</p>
+        <p className="paragraph-file-uploder">Vă invităm să vă autentificați pentru a accesa funcționalitățile.</p>
       )}
     </div>
   );

@@ -1,43 +1,67 @@
-.header {
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Open+Sans:wght@400&display=swap");
+
+.header-container {
+  width: 100%;
+  height: 500px;
+  background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px; /* Ajustează înălțimea după necesități */
-  width: 100%;
-  background-size: cover; /* Asigură-te că imaginea de fundal acoperă întreaga zonă */
-  background-position: center; /* Centrează imaginea de fundal */
-  color: white; /* Schimbă culoarea textului în funcție de imaginea de fundal */
+  color: white;
   text-align: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: height 0.5s ease-in-out;
+}
+
+.header-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 1;
+  transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.header-container:hover::before {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%);
 }
 
 .header-text {
-  background-color: rgba(0, 0, 0, 0.5); /* Adaugă un fundal semi-transparent pentru text pentru a îmbunătăți lizibilitatea */
-  padding: 20px;
-  border-radius: 8px; /* Rotunjește colțurile fundalului textului */
+  margin-top: 10px;
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  transition: transform 0.5s ease-in-out, background 0.5s ease-in-out;
 }
 
 .header-text h1 {
-  margin: 0 0 10px 0; /* Elimină marginile implicite și adaugă spațiu sub titlu */
-  font-size: 3.5rem; /* Ajustează dimensiunea fontului pentru titlu */
-  font-weight: bold; /* Face fontul titlului mai gros */
+  font-size: 3em;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .header-text p {
-  margin: 0; /* Elimină marginile implicite */
-  font-size: 1.2rem; /* Ajustează dimensiunea fontului pentru paragraf */
-  line-height: 1.5; /* Ajustează înălțimea liniei pentru a îmbunătăți lizibilitatea */
+  font-size: 1.5em;
+  margin: 10px 0 0 0;
+  font-family: "Open Sans", sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 768px) {
-  .header {
-    height: 200px; /* Reduc înălțimea pe dispozitivele mobile */
-  }
-
-  .header-text h1 {
-    font-size: 1.8rem; /* Micșorează fontul titlului pentru ecrane mici */
-  }
-
-  .header-text p {
-    font-size: 1rem; /* Micșorează fontul paragrafului pentru ecrane mici */
-  }
+.header-container:hover .header-text {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.3);
 }

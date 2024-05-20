@@ -12,6 +12,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
   const [claseRepartizate2, setClaseRepartizate2] = useState([]);
   const [lista2Inexistenta, setLista2Inexistenta] = useState(false);
   const [eleviNerepartizati, setEleviNerepartizati] = useState(0);
+  const [error, setError] = useState("");
   const { state: authState } = useAuth();
 
   useEffect(() => {
@@ -91,14 +92,16 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
 
   const repartizeazaElevi = () => {
     if (!authState.isAuthenticated) {
-      alert("Trebuie să fiți autentificat pentru a efectua repartizarea.");
+      setError("Trebuie să fiți autentificat pentru a efectua repartizarea.");
       return;
     }
 
     if (!lista2Inexistenta && dataAfterSept.length === 0) {
-      alert("Lista 2 este goală. Verificați bifarea sau încărcarea listei.");
+      setError("Atentie, nu ai incarcat lista 2. Daca nu exista, bifeaza campul de mai jos.");
       return;
     }
+
+    setError("");
 
     const totalStudents1 = dataBeforeSept.length;
     const totalStudents2 = lista2Inexistenta ? 0 : dataAfterSept.length;
@@ -109,12 +112,12 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     setEleviNerepartizati(studentsLeftUnassigned);
 
     if (totalStudents === 0) {
-      alert("Nu există elevi pentru repartizare.");
+      setError("Nu există elevi pentru repartizare.");
       return;
     }
 
     if (numarClase <= 0) {
-      alert("Introduceți un număr valid de clase.");
+      setError("Introduceți un număr valid de clase.");
       return;
     }
 
@@ -149,6 +152,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     setClaseRepartizate2([]);
     setLista2Inexistenta(false);
     setEleviNerepartizati(0);
+    setError("");
   };
 
   return (
@@ -192,6 +196,8 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
           </button>
         </div>
       )}
+
+      {error && <div className="error">{error}</div>}
 
       {eleviNerepartizati > 0 && (
         <div className="warning">

@@ -3,6 +3,7 @@ import { useAuth } from "./AuthContext";
 import RegistrationForm from "../Auth/Registration";
 import Login from "../Auth/Login";
 import ParentComponent from "./ParentComponent";
+import Header from "./Header";
 import "./Landing.css";
 
 const Landing = () => {
@@ -15,10 +16,7 @@ const Landing = () => {
 
   return (
     <div className="landing-container">
-      <header className="landing-header">
-        <h1>Clasa Pregătitoare</h1>
-        <p>Repartizarea elevilor pe clase - Aplicație Web - proiect digital al Școlii Gimnaziale Ștefan cel Mare Vaslui</p>
-      </header>
+      <Header backgroundImage="/assets/Repartizare3.webp" />
       <main className="landing-main">
         {!state.isAuthenticated ? (
           <div className="auth-message">

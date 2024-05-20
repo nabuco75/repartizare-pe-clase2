@@ -1,67 +1,106 @@
+/* FileUploader.css */
+
 .FileUploader {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px auto;
-  max-width: 500px;
-  background: #f8f9fa;
-  padding: 40px 100px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 3rem;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-radius: 24px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
 }
 
-input[type="file"] {
+.FileUploader::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 60%);
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+.FileUploader::after {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  right: -20%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 60%);
+  transform: rotate(-45deg);
+  z-index: 1;
+}
+
+.download-buttons-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  z-index: 2;
+}
+
+.download-button {
+  background: linear-gradient(135deg, #ffb347, #ff5f6d);
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 0 1rem;
+}
+
+.download-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.FileUploader-label {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background 0.3s ease;
+  z-index: 2;
+}
+
+.FileUploader-label:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.FileUploader-label input[type="file"] {
   display: none;
 }
 
-label.FileUploader-label {
-  background-color: #007bff;
-  color: #ffffff;
-  padding: 12px 24px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: inline-block;
-  margin-bottom: 15px; /* Spațiu sub butonul de încărcare */
-}
-
-.download-template-link {
-  background-color: #28a745;
-  color: #ffffff;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: inline-block;
-  margin-top: 20px; /* Spațiu adăugat deasupra link-ului de descărcare */
-}
-
-.paragraph-file-uploder {
-  color: #dc3545;
+.FileUploader p {
+  font-size: 1.2rem;
   font-weight: 500;
-  margin-top: 20px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
-/* Îmbunătățiri pentru accesibilitate */
-.FileUploader:focus-within .FileUploader-label,
-.download-template-link:focus {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #007bff;
-  outline: none;
-}
-
-/* Mesaj pentru utilizatorii nelogati */
 .paragraph-file-uploder {
-  background-color: #ffdddd;
-  border-left: 4px solid #dc3545;
-  padding: 10px;
-  border-radius: 4px;
-  color: var(--navbar-color);
-  width: 100%;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2;
   text-align: center;
-  line-height: 1.5;
-  font-weight: 700; /* Ajustează acest număr conform necesităților tale */
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
 }
