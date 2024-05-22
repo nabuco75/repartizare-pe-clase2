@@ -1,0 +1,34 @@
+[debug] [2024-05-22T12:07:54.839Z] ----------------------------------------------------------------------
+[debug] [2024-05-22T12:07:54.841Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\INFORMATICIAN\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-05-22T12:07:54.841Z] CLI Version:   13.9.0
+[debug] [2024-05-22T12:07:54.842Z] Platform:      win32
+[debug] [2024-05-22T12:07:54.842Z] Node Version:  v21.0.0
+[debug] [2024-05-22T12:07:54.842Z] Time:          Wed May 22 2024 15:07:54 GMT+0300 (Eastern European Summer Time)
+[debug] [2024-05-22T12:07:54.842Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-05-22T12:07:54.845Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-05-22T12:07:54.928Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-22T12:07:54.929Z] > authorizing via signed-in user (scoala5vs@gmail.com)
+[debug] [2024-05-22T12:07:54.929Z] [iam] checking project repartizare-pe-clase for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-05-22T12:07:54.929Z] > refreshing access token with scopes: []
+[debug] [2024-05-22T12:07:54.930Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-05-22T12:07:54.930Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-22T12:07:55.137Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-05-22T12:07:55.137Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-22T12:07:55.142Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/repartizare-pe-clase:testIamPermissions [none]
+[debug] [2024-05-22T12:07:55.142Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/repartizare-pe-clase:testIamPermissions x-goog-quota-user=projects/repartizare-pe-clase
+[debug] [2024-05-22T12:07:55.143Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/repartizare-pe-clase:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-05-22T12:07:55.317Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2024-05-22T12:07:55.317Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2024-05-22T12:07:56.144Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/repartizare-pe-clase:testIamPermissions 200
+[debug] [2024-05-22T12:07:56.144Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/repartizare-pe-clase:testIamPermissions {}
+[debug] [2024-05-22T12:07:56.144Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project repartizare-pe-clase:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2024-05-22T12:07:56.145Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/repartizare-pe-clase [none]
+[debug] [2024-05-22T12:07:56.636Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/repartizare-pe-clase 403
+[debug] [2024-05-22T12:07:56.636Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/repartizare-pe-clase {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2024-05-22T12:07:56.636Z] HTTP Error: 403, The caller does not have permission
+[error] 
+[error] Error: Assertion failed: resolving hosting target of a site with no site name or target name. This should have caused an error earlier
