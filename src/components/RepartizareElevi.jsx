@@ -6,7 +6,7 @@ import "./RepartizareElevi.css";
 
 function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
   const [numarClase, setNumarClase] = useState(0);
-  const [numarEleviPeClasa, setNumarEleviPeClasa] = useState(20); // Default maximum number of students per class
+  const [numarEleviPeClasa, setNumarEleviPeClasa] = useState(20);
   const [claseRepartizate, setClaseRepartizate] = useState([]);
   const [claseRepartizate1, setClaseRepartizate1] = useState([]);
   const [claseRepartizate2, setClaseRepartizate2] = useState([]);
@@ -26,37 +26,24 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
       return [];
     }
 
-    const sorted = students.sort((a, b) => a.nume.localeCompare(b.nume));
+    const sorted = students.sort((a, b) => {
+      if (a.nume.localeCompare(b.nume) === 0) {
+        return a.prenume.localeCompare(b.prenume);
+      }
+      return a.nume.localeCompare(b.nume);
+    });
+
     return distributeStudents(sorted, numClasses);
   };
 
   const distributeStudents = (students, numClasses) => {
     const classes = Array.from({ length: numClasses }, () => []);
     let currentClassIndex = 0;
-    let fullClassesCount = 0;
 
-    const distributeByGender = (students, gender) => {
-      students
-        .filter((student) => student.gen === gender)
-        .forEach((student) => {
-          if (fullClassesCount >= numClasses) {
-            return;
-          }
-
-          while (classes[currentClassIndex].length >= numarEleviPeClasa) {
-            currentClassIndex = (currentClassIndex + 1) % numClasses;
-            fullClassesCount = classes.filter((cl) => cl.length >= numarEleviPeClasa).length;
-            if (fullClassesCount >= numClasses) {
-              return;
-            }
-          }
-          classes[currentClassIndex].push(student);
-          currentClassIndex = (currentClassIndex + 1) % numClasses;
-        });
-    };
-
-    distributeByGender(students, "F");
-    distributeByGender(students, "M");
+    students.forEach((student) => {
+      classes[currentClassIndex].push(student);
+      currentClassIndex = (currentClassIndex + 1) % numClasses;
+    });
 
     return classes;
   };
@@ -64,30 +51,11 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
   const integrateAdditionalStudents = (existingClasses, newStudents) => {
     const numClasses = existingClasses.length;
     let currentClassIndex = 0;
-    let fullClassesCount = 0;
 
-    const distributeByGender = (students, gender) => {
-      students
-        .filter((student) => student.gen === gender)
-        .forEach((student) => {
-          if (fullClassesCount >= numClasses) {
-            return;
-          }
-
-          while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
-            currentClassIndex = (currentClassIndex + 1) % numClasses;
-            fullClassesCount = existingClasses.filter((cl) => cl.length >= numarEleviPeClasa).length;
-            if (fullClassesCount >= numClasses) {
-              return;
-            }
-          }
-          existingClasses[currentClassIndex].push(student);
-          currentClassIndex = (currentClassIndex + 1) % numClasses;
-        });
-    };
-
-    distributeByGender(newStudents, "F");
-    distributeByGender(newStudents, "M");
+    newStudents.forEach((student) => {
+      existingClasses[currentClassIndex].push(student);
+      currentClassIndex = (currentClassIndex + 1) % numClasses;
+    });
   };
 
   const repartizeazaElevi = () => {
@@ -216,7 +184,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (
                   <li key={idx} className="elev">
-                    {elev.nume}
+                    {elev.nume} {elev.prenume}
                   </li>
                 ))}
               </ul>
@@ -236,7 +204,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (
                   <li key={idx} className="elev">
-                    {elev.nume}
+                    {elev.nume} {elev.prenume}
                   </li>
                 ))}
               </ul>
@@ -256,7 +224,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (
                   <li key={idx} className="elev">
-                    {elev.nume}
+                    {elev.nume} {elev.prenume}
                   </li>
                 ))}
               </ul>
