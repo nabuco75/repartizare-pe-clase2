@@ -22,14 +22,12 @@ function FileUploader({ onFileUpload }) {
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
           const formattedData = jsonData.map((item) => ({
-            nume: `${item.NUME} ${item.PRENUME}`,
+            nume: item.NUME,
+            prenume1: item["PRENUME 1"],
+            prenume2: item["PRENUME 2"],
             gen: item.GENUL,
-            frate: item.FRATE,
-            sora: item.SORĂ,
+            rudeGrad1: item["RUDE GRAD 1"] === "DA",
           }));
-
-          console.log("Parsed data:", formattedData);
-          console.log("Category:", category);
 
           onFileUpload(formattedData, category);
         } catch (error) {

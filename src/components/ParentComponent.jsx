@@ -14,7 +14,10 @@ const ParentComponent = () => {
     }
   };
 
-  const handleClassesChange = () => {};
+  const handleClassesChange = (finalClasses) => {
+    // Handle final class distribution (e.g., update state, make an API call, etc.)
+    console.log("Final classes:", finalClasses);
+  };
 
   return (
     <div>

@@ -6,7 +6,7 @@ import "./RepartizareElevi.css";
 
 function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
   const [numarClase, setNumarClase] = useState(0);
-  const [numarEleviPeClasa, setNumarEleviPeClasa] = useState(20); // Default maximum number of students per class
+  const [numarEleviPeClasa, setNumarEleviPeClasa] = useState(20);
   const [claseRepartizate, setClaseRepartizate] = useState([]);
   const [claseRepartizate1, setClaseRepartizate1] = useState([]);
   const [claseRepartizate2, setClaseRepartizate2] = useState([]);
@@ -20,8 +20,18 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     console.log("Data after September:", dataAfterSept);
   }, [dataBeforeSept, dataAfterSept]);
 
+  const validateStudentData = (students) => {
+    return students.every((student) => {
+      const valid = student.nume && student.prenume1 && student.gen && (student.gen === "M" || student.gen === "F");
+      if (!valid) {
+        console.error("Invalid student data:", student);
+      }
+      return valid;
+    });
+  };
+
   const sortAndDistribute = (students, numClasses) => {
-    if (!Array.isArray(students) || students.some((student) => !student.nume)) {
+    if (!validateStudentData(students)) {
       console.error("Invalid student data:", students);
       return [];
     }
@@ -35,7 +45,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     let currentClassIndex = 0;
     let fullClassesCount = 0;
 
-    const distributeByGender = (students, gender) => {
+    const distributeByGenderAndFamily = (students, gender) => {
       students
         .filter((student) => student.gen === gender)
         .forEach((student) => {
@@ -43,20 +53,36 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
             return;
           }
 
-          while (classes[currentClassIndex].length >= numarEleviPeClasa) {
+          if (student.rudeGrad1) {
+            const familyName = student.nume;
+            const familyMembers = students.filter((s) => s.nume === familyName && s.gen === gender);
+            familyMembers.forEach((member) => {
+              while (classes[currentClassIndex].length >= numarEleviPeClasa) {
+                currentClassIndex = (currentClassIndex + 1) % numClasses;
+                fullClassesCount = classes.filter((cl) => cl.length >= numarEleviPeClasa).length;
+                if (fullClassesCount >= numClasses) {
+                  return;
+                }
+              }
+              classes[currentClassIndex].push(member);
+            });
             currentClassIndex = (currentClassIndex + 1) % numClasses;
-            fullClassesCount = classes.filter((cl) => cl.length >= numarEleviPeClasa).length;
-            if (fullClassesCount >= numClasses) {
-              return;
+          } else {
+            while (classes[currentClassIndex].length >= numarEleviPeClasa) {
+              currentClassIndex = (currentClassIndex + 1) % numClasses;
+              fullClassesCount = classes.filter((cl) => cl.length >= numarEleviPeClasa).length;
+              if (fullClassesCount >= numClasses) {
+                return;
+              }
             }
+            classes[currentClassIndex].push(student);
+            currentClassIndex = (currentClassIndex + 1) % numClasses;
           }
-          classes[currentClassIndex].push(student);
-          currentClassIndex = (currentClassIndex + 1) % numClasses;
         });
     };
 
-    distributeByGender(students, "F");
-    distributeByGender(students, "M");
+    distributeByGenderAndFamily(students, "F");
+    distributeByGenderAndFamily(students, "M");
 
     return classes;
   };
@@ -66,7 +92,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     let currentClassIndex = 0;
     let fullClassesCount = 0;
 
-    const distributeByGender = (students, gender) => {
+    const distributeByGenderAndFamily = (students, gender) => {
       students
         .filter((student) => student.gen === gender)
         .forEach((student) => {
@@ -74,20 +100,36 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
             return;
           }
 
-          while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
+          if (student.rudeGrad1) {
+            const familyName = student.nume;
+            const familyMembers = students.filter((s) => s.nume === familyName && s.gen === gender);
+            familyMembers.forEach((member) => {
+              while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
+                currentClassIndex = (currentClassIndex + 1) % numClasses;
+                fullClassesCount = existingClasses.filter((cl) => cl.length >= numarEleviPeClasa).length;
+                if (fullClassesCount >= numClasses) {
+                  return;
+                }
+              }
+              existingClasses[currentClassIndex].push(member);
+            });
             currentClassIndex = (currentClassIndex + 1) % numClasses;
-            fullClassesCount = existingClasses.filter((cl) => cl.length >= numarEleviPeClasa).length;
-            if (fullClassesCount >= numClasses) {
-              return;
+          } else {
+            while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
+              currentClassIndex = (currentClassIndex + 1) % numClasses;
+              fullClassesCount = existingClasses.filter((cl) => cl.length >= numarEleviPeClasa).length;
+              if (fullClassesCount >= numClasses) {
+                return;
+              }
             }
+            existingClasses[currentClassIndex].push(student);
+            currentClassIndex = (currentClassIndex + 1) % numClasses;
           }
-          existingClasses[currentClassIndex].push(student);
-          currentClassIndex = (currentClassIndex + 1) % numClasses;
         });
     };
 
-    distributeByGender(newStudents, "F");
-    distributeByGender(newStudents, "M");
+    distributeByGenderAndFamily(newStudents, "F");
+    distributeByGenderAndFamily(newStudents, "M");
   };
 
   const repartizeazaElevi = () => {
@@ -123,11 +165,9 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
 
     console.log("Repartizează elevi...");
 
-    // Repartizează și afișează lista 1
     const classes1 = sortAndDistribute(dataBeforeSept, numarClase);
     setClaseRepartizate1(classes1);
 
-    // Repartizează lista 2 și unifică clasele
     let finalClasses = classes1.map((clasa) => [...clasa]);
     if (!lista2Inexistenta) {
       const classes2 = sortAndDistribute(dataAfterSept, numarClase);
@@ -216,7 +256,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (
                   <li key={idx} className="elev">
-                    {elev.nume}
+                    {elev.nume} {elev.prenume1} {elev.prenume2}
                   </li>
                 ))}
               </ul>
@@ -236,7 +276,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (
                   <li key={idx} className="elev">
-                    {elev.nume}
+                    {elev.nume} {elev.prenume1} {elev.prenume2}
                   </li>
                 ))}
               </ul>
@@ -256,7 +296,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (
                   <li key={idx} className="elev">
-                    {elev.nume}
+                    {elev.nume} {elev.prenume1} {elev.prenume2}
                   </li>
                 ))}
               </ul>
