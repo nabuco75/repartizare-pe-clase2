@@ -41,11 +41,14 @@
   border: none;
   border-radius: 15px;
   background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
-  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); */
   margin-top: 20px;
   max-width: 800px;
   color: white;
   animation: fadeIn 1.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center vertically */
 }
 
 .auth-message p {
@@ -54,22 +57,39 @@
   color: #f1f1f1;
 }
 
-button {
+form {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+}
+
+form input[type="email"],
+form input[type="password"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
   background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
   border: none;
   color: white;
-  padding: 12px 24px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 18px;
-  margin: 4px 2px;
-  cursor: pointer;
   border-radius: 25px;
+  cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
-button:hover {
+form button:hover {
   background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%);
   transform: scale(1.1);
 }
@@ -80,5 +100,29 @@ button:hover {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Media queries for responsive design */
+@media (max-width: 600px) {
+  .landing-header h1 {
+    font-size: 2em;
+  }
+
+  .landing-header p {
+    font-size: 1em;
+  }
+
+  .auth-message p {
+    font-size: 16px;
+  }
+
+  form {
+    width: 90%;
+  }
+
+  form button {
+    font-size: 16px;
+    padding: 10px;
   }
 }

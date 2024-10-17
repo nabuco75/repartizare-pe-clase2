@@ -1,0 +1,37 @@
+import React, { useState } from "react";
+import FileUploader from "./FileUploader";
+import RepartizareElevi from "./RepartizareElevi";
+
+function MainComponent() {
+  const [dataBeforeSept, setDataBeforeSept] = useState([]);
+  const [dataAfterSept, setDataAfterSept] = useState([]);
+
+  // Funcție pentru gestionarea fișierelor încărcate
+  const handleFileUpload = (data, category) => {
+    if (category === "lista1_fete" || category === "lista1_baieti") {
+      // Adăugăm date noi în starea `dataBeforeSept`
+      console.log("Adaug date în dataBeforeSept:", data);
+      setDataBeforeSept((prevData) => [...prevData, ...data]); // Verificăm aici pentru a evita ștergerea datelor anterioare
+    } else if (category === "lista2_fete" || category === "lista2_baieti") {
+      // Adăugăm date noi în starea `dataAfterSept`
+      console.log("Adaug date în dataAfterSept:", data);
+      setDataAfterSept((prevData) => [...prevData, ...data]);
+    }
+  };
+
+  return (
+    <div>
+      {/* Componenta pentru încărcarea fișierelor */}
+      <FileUploader onFileUpload={handleFileUpload} />
+
+      {/* Componenta pentru repartizarea elevilor */}
+      <RepartizareElevi
+        dataBeforeSept={dataBeforeSept} // Asigurăm că trimitem datele corecte
+        dataAfterSept={dataAfterSept}
+        onClaseChange={(claseRepartizate) => console.log("Clasele repartizate:", claseRepartizate)}
+      />
+    </div>
+  );
+}
+
+export default MainComponent;

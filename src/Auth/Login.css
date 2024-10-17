@@ -1,3 +1,4 @@
+/* Container Login */
 .login__container {
   width: 90%;
   max-width: 400px;
@@ -12,6 +13,7 @@
   align-items: center;
 }
 
+/* Form Group */
 .form-group {
   width: 100%;
   position: relative;
@@ -21,26 +23,27 @@
   align-items: center;
 }
 
+/* Input fields */
 .login__input {
-  width: calc(100% - 24px); /* Adjust width to account for padding */
+  width: 100%;
   padding: 12px;
+  padding-right: 50px; /* Suficient spațiu pentru butonul de toggle */
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
   font-family: Arial, sans-serif;
+  box-sizing: border-box; /* Asigură că padding-ul nu afectează dimensiunea totală */
 }
 
-.password-toggle-button {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
+/* Error Message */
+.error-message {
+  color: #ff0000;
+  font-size: 14px;
+  margin-top: -15px;
+  margin-bottom: 20px;
 }
 
+/* Login Button */
 .login__button {
   width: 100%;
   padding: 12px;
@@ -52,24 +55,20 @@
   font-size: 16px;
   font-weight: bold;
   margin-top: 10px;
+  transition: background-color 0.3s ease; /* Animăm schimbarea de culoare */
 }
 
 .login__button:hover,
 .login__button:focus {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Schimbare culoare la hover/focus */
 }
 
 .login__button:disabled {
   background-color: #cccccc;
+  cursor: not-allowed; /* Cursor vizualizat când butonul este dezactivat */
 }
 
-.error-message {
-  color: #ff0000;
-  font-size: 14px;
-  margin-top: -15px;
-  margin-bottom: 20px;
-}
-
+/* Media Queries pentru mobile */
 @media (max-width: 768px) {
   .login__container {
     width: 95%;

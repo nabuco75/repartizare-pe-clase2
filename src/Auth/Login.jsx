@@ -12,7 +12,6 @@ const Login = ({ onLogin }) => {
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [inputErrors, setInputErrors] = useState({ email: "", password: "" });
@@ -65,10 +64,6 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
     <form onSubmit={handleSubmit} className="login__container">
       <div className="form-group">
@@ -77,21 +72,9 @@ const Login = ({ onLogin }) => {
         {inputErrors.email && <p className="error-message">{inputErrors.email}</p>}
       </div>
 
-      <div className="form-group" style={{ position: "relative" }}>
+      <div className="form-group">
         <label htmlFor="password">Password</label>
-        <input
-          type={showPassword ? "text" : "password"}
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          placeholder="Password"
-          required
-          className="login__input"
-        />
-        <button type="button" onClick={togglePasswordVisibility} className="password-toggle-button">
-          {showPassword ? "Hide" : "Show"}
-        </button>
+        <input type="password" id="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Password" required className="login__input" />
         {inputErrors.password && <p className="error-message">{inputErrors.password}</p>}
       </div>
 

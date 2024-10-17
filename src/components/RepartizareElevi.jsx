@@ -8,8 +8,6 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
   const [numarClase, setNumarClase] = useState(0);
   const [numarEleviPeClasa, setNumarEleviPeClasa] = useState(20);
   const [claseRepartizate, setClaseRepartizate] = useState([]);
-  const [claseRepartizate1, setClaseRepartizate1] = useState([]);
-  const [claseRepartizate2, setClaseRepartizate2] = useState([]);
   const [lista2Inexistenta, setLista2Inexistenta] = useState(false);
   const [eleviNerepartizati, setEleviNerepartizati] = useState(0);
   const [error, setError] = useState("");
@@ -30,106 +28,82 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     });
   };
 
-  const sortAndDistribute = (students, numClasses) => {
-    if (!validateStudentData(students)) {
-      console.error("Invalid student data:", students);
+  const separateAndSortStudents = (students) => {
+    const sortByName = (a, b) => a.nume.localeCompare(b.nume);
+    return {
+      F: students.filter((s) => s.gen === "F").sort(sortByName),
+      M: students.filter((s) => s.gen === "M").sort(sortByName),
+    };
+  };
+
+  const distributeStudentsNewAlgorithm = (studentsList1, studentsList2, numClasses) => {
+    if (!validateStudentData(studentsList1) || (!lista2Inexistenta && !validateStudentData(studentsList2))) {
+      console.error("Invalid student data.");
       return [];
     }
 
-    const sorted = students.sort((a, b) => a.nume.localeCompare(b.nume));
-    return distributeStudents(sorted, numClasses);
-  };
+    const list1 = separateAndSortStudents(studentsList1);
+    const list2 = lista2Inexistenta ? { F: [], M: [] } : separateAndSortStudents(studentsList2);
 
-  const distributeStudents = (students, numClasses) => {
     const classes = Array.from({ length: numClasses }, () => []);
     let currentClassIndex = 0;
-    let fullClassesCount = 0;
+    const maxStudentsPerClass = numarEleviPeClasa;
 
-    const distributeByGenderAndFamily = (students, gender) => {
-      students
-        .filter((student) => student.gen === gender)
-        .forEach((student) => {
-          if (fullClassesCount >= numClasses) {
-            return;
-          }
-
-          if (student.rudeGrad1) {
-            const familyName = student.nume;
-            const familyMembers = students.filter((s) => s.nume === familyName && s.gen === gender);
-            familyMembers.forEach((member) => {
-              while (classes[currentClassIndex].length >= numarEleviPeClasa) {
-                currentClassIndex = (currentClassIndex + 1) % numClasses;
-                fullClassesCount = classes.filter((cl) => cl.length >= numarEleviPeClasa).length;
-                if (fullClassesCount >= numClasses) {
-                  return;
-                }
-              }
-              classes[currentClassIndex].push(member);
-            });
-            currentClassIndex = (currentClassIndex + 1) % numClasses;
-          } else {
-            while (classes[currentClassIndex].length >= numarEleviPeClasa) {
-              currentClassIndex = (currentClassIndex + 1) % numClasses;
-              fullClassesCount = classes.filter((cl) => cl.length >= numarEleviPeClasa).length;
-              if (fullClassesCount >= numClasses) {
-                return;
-              }
-            }
-            classes[currentClassIndex].push(student);
-            currentClassIndex = (currentClassIndex + 1) % numClasses;
-          }
-        });
+    // Funcția pentru adăugarea elevilor în clase
+    const addStudentToClass = (student) => {
+      if (classes[currentClassIndex].length >= maxStudentsPerClass) {
+        currentClassIndex = (currentClassIndex + 1) % numClasses;
+      }
+      classes[currentClassIndex].push(student);
     };
 
-    distributeByGenderAndFamily(students, "F");
-    distributeByGenderAndFamily(students, "M");
+    // Funcția principală de alternare și distribuire
+    const distribute = () => {
+      let totalStudentsAdded = 0;
 
+      while (list1.F.length > 0 || list1.M.length > 0 || list2.F.length > 0 || list2.M.length > 0) {
+        // Adăugăm 1 fată din Lista 1
+        if (list1.F.length > 0) {
+          addStudentToClass(list1.F.shift());
+          totalStudentsAdded++;
+        }
+
+        // Adăugăm 1 fată din Lista 2 (dacă există)
+        if (list2.F.length > 0) {
+          addStudentToClass(list2.F.shift());
+          totalStudentsAdded++;
+        } else if (list1.F.length > 0) {
+          // Dacă lista 2 fete s-a terminat, continuăm cu lista 1 fete
+          addStudentToClass(list1.F.shift());
+          totalStudentsAdded++;
+        }
+
+        // Adăugăm 1 băiat din Lista 1
+        if (list1.M.length > 0) {
+          addStudentToClass(list1.M.shift());
+          totalStudentsAdded++;
+        }
+
+        // Adăugăm 1 băiat din Lista 2 (dacă există)
+        if (list2.M.length > 0) {
+          addStudentToClass(list2.M.shift());
+          totalStudentsAdded++;
+        } else if (list1.M.length > 0) {
+          // Dacă lista 2 băieți s-a terminat, continuăm cu lista 1 băieți
+          addStudentToClass(list1.M.shift());
+          totalStudentsAdded++;
+        }
+
+        // După fiecare 4 copii, trecem la următoarea clasă
+        if (totalStudentsAdded >= 4) {
+          currentClassIndex = (currentClassIndex + 1) % numClasses;
+          totalStudentsAdded = 0;
+        }
+      }
+    };
+
+    distribute();
     return classes;
-  };
-
-  const integrateAdditionalStudents = (existingClasses, newStudents) => {
-    const numClasses = existingClasses.length;
-    let currentClassIndex = 0;
-    let fullClassesCount = 0;
-
-    const distributeByGenderAndFamily = (students, gender) => {
-      students
-        .filter((student) => student.gen === gender)
-        .forEach((student) => {
-          if (fullClassesCount >= numClasses) {
-            return;
-          }
-
-          if (student.rudeGrad1) {
-            const familyName = student.nume;
-            const familyMembers = students.filter((s) => s.nume === familyName && s.gen === gender);
-            familyMembers.forEach((member) => {
-              while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
-                currentClassIndex = (currentClassIndex + 1) % numClasses;
-                fullClassesCount = existingClasses.filter((cl) => cl.length >= numarEleviPeClasa).length;
-                if (fullClassesCount >= numClasses) {
-                  return;
-                }
-              }
-              existingClasses[currentClassIndex].push(member);
-            });
-            currentClassIndex = (currentClassIndex + 1) % numClasses;
-          } else {
-            while (existingClasses[currentClassIndex].length >= numarEleviPeClasa) {
-              currentClassIndex = (currentClassIndex + 1) % numClasses;
-              fullClassesCount = existingClasses.filter((cl) => cl.length >= numarEleviPeClasa).length;
-              if (fullClassesCount >= numClasses) {
-                return;
-              }
-            }
-            existingClasses[currentClassIndex].push(student);
-            currentClassIndex = (currentClassIndex + 1) % numClasses;
-          }
-        });
-    };
-
-    distributeByGenderAndFamily(newStudents, "F");
-    distributeByGenderAndFamily(newStudents, "M");
   };
 
   const repartizeazaElevi = () => {
@@ -139,7 +113,7 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     }
 
     if (!lista2Inexistenta && dataAfterSept.length === 0) {
-      setError("Atentie, nu ai incarcat lista 2. Daca nu exista, bifeaza campul de mai jos.");
+      setError("Atenție, nu ai încărcat lista 2. Dacă nu există, bifează câmpul de mai jos.");
       return;
     }
 
@@ -163,21 +137,12 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
       return;
     }
 
-    console.log("Repartizează elevi...");
+    const classes = distributeStudentsNewAlgorithm(dataBeforeSept, lista2Inexistenta ? [] : dataAfterSept, numarClase);
 
-    const classes1 = sortAndDistribute(dataBeforeSept, numarClase);
-    setClaseRepartizate1(classes1);
+    const sortedClasses = classes.map((clasa) => clasa.sort((a, b) => a.nume.localeCompare(b.nume)));
 
-    let finalClasses = classes1.map((clasa) => [...clasa]);
-    if (!lista2Inexistenta) {
-      const classes2 = sortAndDistribute(dataAfterSept, numarClase);
-      setClaseRepartizate2(classes2);
-      integrateAdditionalStudents(finalClasses, dataAfterSept);
-    }
-
-    const sortedFinalClasses = finalClasses.map((clasa) => clasa.sort((a, b) => a.nume.localeCompare(b.nume)));
-    setClaseRepartizate(sortedFinalClasses);
-    onClaseChange(sortedFinalClasses);
+    setClaseRepartizate(sortedClasses);
+    onClaseChange(sortedClasses);
   };
 
   const handleDownload = () => {
@@ -188,8 +153,6 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
     setNumarClase(0);
     setNumarEleviPeClasa(20);
     setClaseRepartizate([]);
-    setClaseRepartizate1([]);
-    setClaseRepartizate2([]);
     setLista2Inexistenta(false);
     setEleviNerepartizati(0);
     setError("");
@@ -245,53 +208,13 @@ function RepartizareElevi({ dataBeforeSept, dataAfterSept, onClaseChange }) {
         </div>
       )}
 
-      {claseRepartizate1.length > 0 && (
-        <div className="clase-repartizate">
-          <h3 className="subtitle">Repartizare lista 1:</h3>
-          {claseRepartizate1.map((clasa, index) => (
-            <div key={index} className="clasa">
-              <h4 className="clasa-title">
-                Clasa {index + 1}: {clasa.length} elevi
-              </h4>
-              <ul className="lista-elevi">
-                {clasa.map((elev, idx) => (
-                  <li key={idx} className="elev">
-                    {elev.nume} {elev.prenume1} {elev.prenume2}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {claseRepartizate2.length > 0 && (
-        <div className="clase-repartizate">
-          <h3 className="subtitle">Repartizare lista 2:</h3>
-          {claseRepartizate2.map((clasa, index) => (
-            <div key={index} className="clasa">
-              <h4 className="clasa-title">
-                Clasa {index + 1}: {clasa.length} elevi
-              </h4>
-              <ul className="lista-elevi">
-                {clasa.map((elev, idx) => (
-                  <li key={idx} className="elev">
-                    {elev.nume} {elev.prenume1} {elev.prenume2}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-
       {claseRepartizate.length > 0 && (
         <div className="clase-repartizate">
-          <h3 className="subtitle">Clase finale reunite:</h3>
+          <h3 className="subtitle">Clasele repartizate:</h3>
           {claseRepartizate.map((clasa, index) => (
             <div key={index} className="clasa">
               <h4 className="clasa-title">
-                Clasa {index + 1}: {clasa.length} elevi
+                Clasa {String.fromCharCode(65 + index)}: {clasa.length} elevi
               </h4>
               <ul className="lista-elevi">
                 {clasa.map((elev, idx) => (

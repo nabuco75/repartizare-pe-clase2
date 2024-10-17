@@ -1,10 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar"; // Importă componenta Navbar
+import Navbar from "./components/Navbar";
 import Landing from "./components/Landing";
 import Login from "./Auth/Login";
 import RegistrationForm from "./Auth/Registration";
-import { AuthProvider } from "./components/AuthContext"; // Importă AuthProvider
+import { AuthProvider } from "./components/AuthContext";
+import NotFound from "./components/NotFound"; // Exemplu de pagină 404
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegistrationForm />} />
+          <Route path="*" element={<NotFound />} /> {/* Ruta pentru pagini inexistente */}
         </Routes>
       </Router>
     </AuthProvider>
