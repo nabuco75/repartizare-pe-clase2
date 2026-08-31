@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# fisiere cu date reale ale elevilor (nume, CNP) - nu ajung niciodata in repo
+*.xlsx
+*.xls
+!public/*.xlsx
+!public/assets/*.xlsx

@@ -122,6 +122,66 @@
   padding: 1rem;
 }
 
+.an-scolar-info {
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  z-index: 2;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.summary-box {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  z-index: 2;
+  width: 100%;
+  max-width: 320px;
+}
+
+.summary-box p {
+  background: none;
+  backdrop-filter: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0.4rem 0 0.2rem;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.summary-box ul {
+  margin: 0 0 0.5rem 1rem;
+  padding: 0;
+}
+
+.summary-box li {
+  margin: 0.1rem 0;
+}
+
+.upload-section {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  z-index: 2;
+}
+
+.upload-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.total-elevi-incarcati {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  z-index: 2;
+  text-align: center;
+}
+
 /* Reset button */
 .reset-button {
   margin-top: 2rem;
@@ -140,4 +200,16 @@
 .reset-button:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.summary-box .sursa-lista {
+  margin-top: 6px;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.ces-info {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #6b5a2e;
 }

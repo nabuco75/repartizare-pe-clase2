@@ -1,0 +1,136 @@
+.gemeni-selector {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 3rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 24px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+.gemeni-confirmed-bar {
+  flex-direction: row !important;
+  justify-content: center;
+  padding: 1.2rem 2rem !important;
+  gap: 1.5rem;
+}
+
+.gemeni-confirmed-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.gemeni-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+}
+
+.gemeni-hint {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.pair-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 700px;
+  flex-wrap: wrap;
+}
+
+.pair-label {
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 90px;
+}
+
+.pair-select {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #ffffff;
+  cursor: pointer;
+  flex: 1;
+  min-width: 180px;
+}
+
+.pair-select option {
+  background: #764ba2;
+  color: #ffffff;
+}
+
+.remove-pair-btn {
+  background: rgba(255, 80, 80, 0.4);
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-pair-btn:hover {
+  background: rgba(255, 80, 80, 0.7);
+}
+
+.gemeni-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.gs-button {
+  background: linear-gradient(135deg, #ffb347, #ff5f6d);
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gs-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.gs-button-secondary {
+  background: linear-gradient(135deg, #43c6ac, #2c3e7a);
+}
+
+.button-link {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  color: white;
+  font-size: 0.95rem;
+  padding: 0.4rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.button-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

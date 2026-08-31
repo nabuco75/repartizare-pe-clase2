@@ -1,132 +1,187 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useAuth } from "./AuthContext";
-import * as XLSX from "xlsx";
+import {
+  parseSIIIR,
+  getReferenceYear,
+  categorizeStudent,
+  listaDinCNP,
+} from "./siiirParser";
 import "./FileUploader.css";
 
-function FileUploader({ onFileUpload }) {
+function FileUploader({ onFileUpload, onReset }) {
   const { state } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState({
-    lista1_fete: false,
-    lista2_fete: false,
-    lista1_baieti: false,
-    lista2_baieti: false,
-  });
-  const [warnings, setWarnings] = useState("");
-  const [fileNames, setFileNames] = useState({});
-  const [totalEleviIncarcati, setTotalEleviIncarcati] = useState(0); // Adăugat pentru a contoriza elevii
+  const refYear   = useMemo(getReferenceYear, []);
+  const anScolar  = `${refYear + 6}-${refYear + 7}`;
 
-  const handleFileChange = (e, category) => {
+  const [mainLoaded,  setMainLoaded]  = useState(false);
+  const [summary,     setSummary]     = useState(null);
+  const [lmL1Loaded,  setLmL1Loaded]  = useState(false);
+  const [lmL2Loaded,  setLmL2Loaded]  = useState(false);
+  const [warnings,    setWarnings]    = useState("");
+  const [isLoading,   setIsLoading]   = useState(false);
+  const [totalElevi,  setTotalElevi]  = useState(0);
+
+  const handleMainFile = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      console.log("Încărcăm fișierul:", file.name);
-      const expectedNames = {
-        lista1_fete: "Lista 1 Fete",
-        lista2_fete: "Lista 2 Fete",
-        lista1_baieti: "Lista 1 Baieti",
-        lista2_baieti: "Lista 2 Baieti",
+    if (!file) return;
+
+    setIsLoading(true);
+    try {
+      const { students, invalide, duplicate, hasListaColumn } = await parseSIIIR(file);
+
+      const buckets = {
+        lista1_fete:   [],
+        lista1_baieti: [],
+        lista2_fete:   [],
+        lista2_baieti: [],
+        ces:           [],
       };
+      const skipped   = [];
+      const diferente = [];
 
-      setIsLoading(true);
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const data = new Uint8Array(event.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
+      for (const s of students) {
+        const cat = categorizeStudent(s, refYear);
+        if (cat) buckets[cat].push(s);
+        else     skipped.push(s);
 
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-          const rows = jsonData.slice(1);
+        // Lista din fișier diferă de cea rezultată din data nașterii (CES nu se compară)
+        const calculata = listaDinCNP(s.cnp, refYear);
+        if (s.lista && s.lista !== "CES" && calculata && s.lista !== calculata) diferente.push(s);
+      }
 
-          const formattedData = rows
-            .filter((row) => row[0] && row[1] && row[3])
-            .map((row) => ({
-              nume: row[0],
-              prenume1: row[1],
-              prenume2: row[2],
-              gen: row[3],
-              frate: row[4] === "DA",
-              sora: row[5] === "DA",
-            }));
+      Object.entries(buckets).forEach(([cat, list]) => onFileUpload(list, cat));
 
-          console.log(`Date încărcate pentru ${category}:`, formattedData);
+      setSummary({
+        ...Object.fromEntries(Object.entries(buckets).map(([k, v]) => [k, v.length])),
+        total: students.length,
+        sursaLista: hasListaColumn ? "coloana «Lista» din fișier" : "data nașterii din CNP",
+      });
+      setTotalElevi(students.length);
+      setMainLoaded(true);
 
-          // Verificăm dacă numele fișierului este corect
-          if (!file.name.includes(expectedNames[category])) {
-            setWarnings(`Ai încărcat greșit fișierul pentru ${category}. Fișierul ar trebui să fie ${expectedNames[category]}.xlsx`);
-            setUploadedFiles((prev) => ({ ...prev, [category]: false }));
-          } else {
-            setWarnings("");
-            setUploadedFiles((prev) => ({ ...prev, [category]: true }));
-            setFileNames((prev) => ({ ...prev, [category]: file.name }));
-            onFileUpload(formattedData, category);
-
-            // Actualizăm numărul total de elevi încărcați
-            setTotalEleviIncarcati((prevCount) => prevCount + formattedData.length);
-          }
-        } catch (error) {
-          console.error("Eroare la citirea fișierului Excel:", error);
-          setWarnings("A apărut o eroare la încărcarea fișierului.");
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      reader.readAsArrayBuffer(file);
+      const mesaje = [];
+      if (invalide  > 0) mesaje.push(`${invalide} rânduri ignorate (CNP lipsă sau invalid).`);
+      if (duplicate > 0) mesaje.push(`${duplicate} CNP-uri duplicate eliminate.`);
+      if (skipped.length > 0) mesaje.push(`${skipped.length} elevi nerepartizabili (an naștere neașteptat).`);
+      if (diferente.length > 0)
+        mesaje.push(
+          `${diferente.length} elevi au în fișier o listă diferită de cea rezultată din CNP ` +
+          `(${diferente.map((s) => `${s.nume} ${s.prenume1}`).join(", ")}) — s-a folosit lista din fișier.`
+        );
+      setWarnings(mesaje.join(" "));
+    } catch (err) {
+      setWarnings(
+        err && err.message
+          ? `Eroare la citire: ${err.message}`
+          : "Eroare la citire. Verificați că fișierul este exportul SIIIR în format .xlsx."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const resetUploads = () => {
-    setUploadedFiles({
-      lista1_fete: false,
-      lista2_fete: false,
-      lista1_baieti: false,
-      lista2_baieti: false,
-    });
+  const handleLimbaMatFile = async (e, lista) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsLoading(true);
+    const category = lista === 1 ? "lista1_limbamat" : "lista2_limbamat";
+    try {
+      const { students } = await parseSIIIR(file);
+      onFileUpload(students, category);
+      lista === 1 ? setLmL1Loaded(true) : setLmL2Loaded(true);
+      setTotalElevi((prev) => prev + students.length);
+      setWarnings("");
+    } catch (err) {
+      setWarnings(
+        err && err.message
+          ? `Eroare la citirea fișierului limbă maternă: ${err.message}`
+          : "Eroare la citirea fișierului limbă maternă."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setMainLoaded(false);
+    setSummary(null);
+    setLmL1Loaded(false);
+    setLmL2Loaded(false);
     setWarnings("");
-    setFileNames({});
-    setTotalEleviIncarcati(0); // Resetăm și numărul total de elevi
+    setTotalElevi(0);
+    onReset();
   };
 
   return (
     <div className="FileUploader">
       {state.isAuthenticated ? (
         <>
-          <div className="upload-buttons-container">
-            <label className={`FileUploader-label ${uploadedFiles.lista1_fete ? "uploaded" : ""}`}>
-              {uploadedFiles.lista1_fete ? `Încărcat! (${fileNames.lista1_fete})` : "Încarcă Lista 1 Fete"}
-              <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "lista1_fete")} disabled={uploadedFiles.lista1_fete && !warnings} />
+          <p className="an-scolar-info">
+            An școlar: <strong>{anScolar}</strong> — referință naștere: <strong>{refYear}</strong>
+          </p>
+
+          {/* Fișier principal SIIIR */}
+          <div className="upload-section">
+            <h3 className="upload-section-title">Fișier SIIIR — toți elevii</h3>
+            <label className={`FileUploader-label ${mainLoaded ? "uploaded" : ""}`}>
+              {mainLoaded ? "Fișier SIIIR încărcat ✓" : "Încarcă fișierul SIIIR (.xlsx)"}
+              <input type="file" accept=".xlsx" onChange={handleMainFile} disabled={mainLoaded} />
             </label>
-            <label className={`FileUploader-label ${uploadedFiles.lista2_fete ? "uploaded" : ""}`}>
-              {uploadedFiles.lista2_fete ? `Încărcat! (${fileNames.lista2_fete})` : "Încarcă Lista 2 Fete"}
-              <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "lista2_fete")} disabled={uploadedFiles.lista2_fete && !warnings} />
-            </label>
-            <label className={`FileUploader-label ${uploadedFiles.lista1_baieti ? "uploaded" : ""}`}>
-              {uploadedFiles.lista1_baieti ? `Încărcat! (${fileNames.lista1_baieti})` : "Încarcă Lista 1 Băieți"}
-              <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "lista1_baieti")} disabled={uploadedFiles.lista1_baieti && !warnings} />
-            </label>
-            <label className={`FileUploader-label ${uploadedFiles.lista2_baieti ? "uploaded" : ""}`}>
-              {uploadedFiles.lista2_baieti ? `Încărcat! (${fileNames.lista2_baieti})` : "Încarcă Lista 2 Băieți"}
-              <input type="file" accept=".xlsx" onChange={(e) => handleFileChange(e, "lista2_baieti")} disabled={uploadedFiles.lista2_baieti && !warnings} />
-            </label>
+
+            {summary && (
+              <div className="summary-box">
+                <p><strong>Lista 1</strong> (până la 31 aug {refYear + 6}):</p>
+                <ul>
+                  <li>Fete: <strong>{summary.lista1_fete}</strong></li>
+                  <li>Băieți: <strong>{summary.lista1_baieti}</strong></li>
+                </ul>
+                <p><strong>Lista 2</strong> (1 sep – 31 dec {refYear + 6}):</p>
+                <ul>
+                  <li>Fete: <strong>{summary.lista2_fete}</strong></li>
+                  <li>Băieți: <strong>{summary.lista2_baieti}</strong></li>
+                </ul>
+                <p>Total: <strong>{summary.total}</strong> elevi</p>
+                {summary.ces > 0 && (
+                  <p className="ces-info">
+                    Din care <strong>{summary.ces}</strong> cu CES — excluși din repartizarea
+                    automată, se repartizează manual.
+                  </p>
+                )}
+                <p className="sursa-lista">Împărțire pe liste după: {summary.sursaLista}</p>
+              </div>
+            )}
           </div>
 
-          {/* Afișăm avertismentul dacă există */}
-          {warnings && <p className="warning">{warnings}</p>}
+          {/* Limbă maternă — opțional, apare după ce fișierul principal e încărcat */}
+          {mainLoaded && (
+            <div className="upload-section">
+              <h3 className="upload-section-title">Elevi cu limbă maternă diferită (opțional)</h3>
+              <label className={`FileUploader-label ${lmL1Loaded ? "uploaded" : ""}`}>
+                {lmL1Loaded ? "Lista 1 Limbă maternă ✓" : "Lista 1 – Limbă maternă"}
+                <input type="file" accept=".xlsx" onChange={(e) => handleLimbaMatFile(e, 1)} disabled={lmL1Loaded} />
+              </label>
+              <label className={`FileUploader-label ${lmL2Loaded ? "uploaded" : ""}`}>
+                {lmL2Loaded ? "Lista 2 Limbă maternă ✓" : "Lista 2 – Limbă maternă"}
+                <input type="file" accept=".xlsx" onChange={(e) => handleLimbaMatFile(e, 2)} disabled={lmL2Loaded} />
+              </label>
+            </div>
+          )}
 
-          {isLoading && <p>Se încarcă...</p>}
+          {warnings  && <p className="warning">{warnings}</p>}
+          {isLoading && <p>Se procesează...</p>}
 
-          {/* Afișăm numărul total de elevi încărcați */}
-          <p className="total-elevi-incarcati">Ai încărcat un total de {totalEleviIncarcati} elevi.</p>
+          {totalElevi > 0 && (
+            <p className="total-elevi-incarcati">Total elevi încărcați: <strong>{totalElevi}</strong></p>
+          )}
 
-          {/* Buton de reset */}
-          <button className="reset-button" onClick={resetUploads}>
-            Resetează
-          </button>
+          <button className="reset-button" onClick={handleReset}>Resetează</button>
         </>
       ) : (
-        <p className="paragraph-file-uploder">Vă invităm să vă autentificați pentru a accesa funcționalitățile.</p>
+        <p className="paragraph-file-uploder">
+          Vă invităm să vă autentificați pentru a accesa funcționalitățile.
+        </p>
       )}
     </div>
   );
@@ -134,6 +189,7 @@ function FileUploader({ onFileUpload }) {
 
 FileUploader.propTypes = {
   onFileUpload: PropTypes.func.isRequired,
+  onReset:      PropTypes.func.isRequired,
 };
 
 export default FileUploader;
