@@ -27,3 +27,6 @@ yarn-error.log*
 *.xls
 !public/*.xlsx
 !public/assets/*.xlsx
+
+# cache local de deploy Firebase
+.firebase/
